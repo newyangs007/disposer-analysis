@@ -83,6 +83,18 @@ main section.on{display:block}
 .subtabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .pane{display:none}.pane.on{display:block}
 .chart.narrow{max-width:640px}
+.grid.eq > .card{display:flex;flex-direction:column;gap:10px}
+.grid.eq > .card h3 small{font-weight:500;margin-left:6px}
+.srcd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;white-space:nowrap}
+.ctag{display:inline-block;font-size:11px;font-weight:700;color:var(--ink-3);border:1px solid var(--line);border-radius:4px;padding:0 5px;margin-right:6px}
+.srcd time{font-family:var(--font-mono);font-size:11px;color:var(--ink-3)}
+.cnt{display:inline-flex;gap:3px}.cnt i{width:8px;height:8px;border-radius:2px;background:var(--line)}.cnt i.on{background:var(--accent)}
+.rk{font-family:var(--font-mono);font-weight:700;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:7px;background:var(--surface-2)}
+.rk.r1{background:var(--accent);color:#fff}
+.rowfoc tbody th.row,.rowfoc tbody td.cat{cursor:pointer}
+.rowfoc tbody tr.rsel > th.row,.rowfoc tbody tr.rsel > td:not(.cat){background:var(--accent-soft)}
+.rowfoc tbody tr.rsel > th.row{box-shadow:inset 3px 0 0 var(--accent)}
+.rowfoc.hassel tbody tr:not(.rsel) > td:not(.cat),.rowfoc.hassel tbody tr:not(.rsel) > th.row{opacity:.38}
 .pager{display:flex;justify-content:space-between;gap:12px;padding:22px 0 0;margin-top:22px;border-top:1px solid var(--line)}
 .pager button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 16px;cursor:pointer;text-align:left;font-size:14px;font-weight:700;color:var(--ink);display:grid;gap:2px;min-width:180px}
 .pager button small{font-weight:500}
@@ -333,12 +345,12 @@ footer{padding:40px 0 60px;color:var(--ink-3);font-size:12px}
 <section id="pdp">
   <div class="sec-head"><span class="ix">04 · PDP 로직</span><h2>상세페이지는 어떤 순서로 설득하는가</h2>
     <p class="fine">상세페이지 이미지를 판독해 주제 단위로 묶음 · 역할을 누르면 그 섹션만 강조</p></div>
-  <div class="subtabs" role="tablist"><button data-pane="p-flow" aria-selected="true">섹션 흐름</button><button data-pane="p-logic" aria-selected="false">설계 로직 비교</button></div>
-  <div class="pane on card" id="p-flow">
+  <div class="subtabs" role="tablist"><button data-pane="p-logic" aria-selected="true">설계 로직 비교</button><button data-pane="p-flow" aria-selected="false">섹션 흐름</button></div>
+  <div class="pane card" id="p-flow">
     <div class="seg" id="roleSeg"></div>
     <div id="flow"></div>
   </div>
-  <div class="pane" id="p-logic">
+  <div class="pane on" id="p-logic">
   <div class="tbl-wrap"><table class="rowfoc" id="logicT"></table></div>
   </div>
 </section>
@@ -355,10 +367,11 @@ footer{padding:40px 0 60px;color:var(--ink-3);font-size:12px}
   <div class="sec-head"><span class="ix">06 · 제안</span><h2>신규 음식물처리기 PDP 구성안</h2>
     <p class="fine">USP는 가설이며 출시 전 소비자 조사로 검증 필요</p></div>
   <div class="tabs" role="tablist" aria-label="PDP 구성안">
-    <button role="tab" data-plan="simple" aria-selected="true">심플안<small>디자인 프리미엄 · 7블록</small></button>
-    <button role="tab" data-plan="full" aria-selected="false">전체안<small>정보형 · 12블록</small></button>
+    <button role="tab" data-plan="1" aria-selected="false">1안 · 신뢰 정보형<small>12블록 · 3D 1개(선택)</small></button>
+    <button role="tab" data-plan="2" aria-selected="true">2안 · 디자인 프리미엄형<small>7블록 · 3D 1개</small></button>
+    <button role="tab" data-plan="3" aria-selected="false">3안 · 핵심 압축형<small>5블록 · 3D 없음</small></button>
   </div>
-  <div class="subtabs" role="tablist"><button data-pane="p-plan" aria-selected="true">블록 구성</button><button data-pane="p-content" aria-selected="false">콘텐츠·3D</button><button data-pane="p-basis" aria-selected="false">근거 (공백·고려 요소)</button></div>
+  <div class="subtabs" role="tablist"><button data-pane="p-plan" aria-selected="true">블록 구성</button><button data-pane="p-content" aria-selected="false">넣을 콘텐츠</button><button data-pane="p-basis" aria-selected="false">근거 (공백·고려 요소)</button></div>
   <div class="pane on" id="p-plan">
   <div class="grid g2" style="margin-bottom:14px" id="planTop"></div>
   <div class="plan" id="planRows"></div>
@@ -369,31 +382,25 @@ footer{padding:40px 0 60px;color:var(--ink-3);font-size:12px}
   <p class="foot" id="contentLabel"></p>
   </div>
   <div class="pane" id="p-basis">
-  <div class="grid g2">
+  <div class="grid g2 eq">
     <div class="card">
-      <h3 style="margin-bottom:10px">경쟁 공백 (8개 제품 기준)</h3>
+      <h3>경쟁 공백 <small>9개 제품 상세페이지 기준</small></h3>
       <div class="tbl-wrap"><table>
         <thead><tr><th class="lh">구매 불안</th><th class="lh">경쟁사 현재 대응</th><th>공백</th></tr></thead>
         <tbody>
-          <tr><td class="lt"><b>디자인 증명</b></td><td class="lt">모두 정적 이미지·렌더 컷<br>인터랙티브 3D·AR 없음</td><td><span class="chip st-bad">큼</span></td></tr>
           <tr><td class="lt"><b>유지비</b></td><td class="lt">필터·전기료 표기 기준이 제각각</td><td><span class="chip st-bad">큼</span></td></tr>
-          <tr><td class="lt"><b>국물 많은 한식</b></td><td class="lt">코웨이만 '된장찌개·김치찜 처리' 명시<br>처리 시간·결과 실측 공개는 없음</td><td><span class="chip st-warn">중간</span></td></tr>
-          <tr><td class="lt"><b>냄새·소음</b></td><td class="lt">시험성적서는 있으나 조건·채널별 수치 상이</td><td><span class="chip st-warn">중간</span></td></tr>
-          <tr><td class="lt">용량·크기·고온·자동</td><td class="lt">대부분 핵심으로 소구</td><td><span class="chip st-na">포화</span></td></tr>
+          <tr><td class="lt"><b>디자인 증명</b></td><td class="lt">모두 정적 이미지·렌더 컷<br>돌려보는 360° 뷰 없음</td><td><span class="chip st-bad">큼</span></td></tr>
+          <tr><td class="lt"><b>국물 많은 한식</b></td><td class="lt">코웨이만 '된장찌개·김치찜 처리' 명시<br>처리 시간 실측 공개는 없음</td><td><span class="chip st-warn">중간</span></td></tr>
+          <tr><td class="lt"><b>냄새·소음</b></td><td class="lt">시험성적서는 있으나<br>조건·채널별 수치 상이</td><td><span class="chip st-warn">중간</span></td></tr>
+          <tr><td class="lt"><b>공간</b></td><td class="lt">폭 17~20cm 슬림을 대부분 소구<br>열림 높이 표기는 스마트카라뿐</td><td><span class="chip st-warn">중간</span></td></tr>
+          <tr><td class="lt"><b>용량·고온·자동</b></td><td class="lt">대부분 핵심으로 소구</td><td><span class="chip st-na">포화</span></td></tr>
         </tbody></table></div>
-      <p class="foot">디자인은 쿠첸이 '오브제'로 이미 강하게 소구 중입니다. 사진이 아닌 체험(3D·AR)으로 보여줘야 차별화됩니다.</p>
+      <p class="foot">디자인은 쿠첸이 '오브제'로 이미 소구 중 → 사진이 아닌 360° 뷰로 보여줘야 차별화</p>
     </div>
     <div class="card">
-      <h3 style="margin-bottom:10px">구매 시 고려 요소 (근거)</h3>
-      <ul class="dots">
-        <li><b>냄새</b> 여름철 냄새 · <a href="https://www.segye.com/newsView/20260503501832">세계일보</a></li>
-        <li><b>공간</b> 좁은 주방에 들어가는지 · <a href="https://www.segye.com/newsView/20260503501832">세계일보</a></li>
-        <li><b>관리</b> 필터 교체·내부 세척 부담 · <a href="https://www.segye.com/newsView/20260503501832">세계일보</a></li>
-        <li><b>비용</b> 구매 비용 부담 · <a href="https://www.ajd.co.kr/contents/basic-tip/guide/%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0">아정당 가이드</a></li>
-        <li><b>소음·자리</b> 소음과 자리 차지 · <a href="https://www.ajd.co.kr/contents/basic-tip/guide/%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0">아정당 가이드</a></li>
-        <li><b>수분</b> 국물 등 수분 많은 음식물은 작동 시간 지연 · <a href="https://biz.newdaily.co.kr/site/data/html/2026/02/25/2026022500160.amp.html">뉴데일리 사용기</a></li>
-        <li><b>유지비</b> 한국소비자원 평가 항목에 연간 유지비 포함 · <a href="https://www.asiae.co.kr/en/article/2026032314002073036">아시아경제</a></li>
-      </ul>
+      <h3>구매 시 고려 요소 <small>우선순위 = 언급한 출처 수</small></h3>
+      <div class="tbl-wrap"><table id="consT"></table></div>
+      <p class="foot">출처 4곳(언론·소비자원 시험·구매 가이드)에서 각 요소를 언급한 횟수로 순위를 매겼습니다. 같은 수는 같은 순위입니다.</p>
     </div>
   </div>
   </div>
@@ -435,6 +442,8 @@ footer{padding:40px 0 60px;color:var(--ink-3);font-size:12px}
         <li><a href="https://www.smarttoday.co.kr/ko-kr/articles/98190">스마트투데이 · 스마트카라 STONE 공개 (2025.12.4)</a></li>
         <li><a href="https://www.vegannews.co.kr/news/article.html?no=384647">비건뉴스 · JMW 바이툴즈 론칭 (2026.8.10)</a></li>
         <li><a href="https://www.segye.com/newsView/20260503501832">세계일보 · 음식물처리기 구매 기준</a></li>
+        <li><a href="https://www.fnnews.com/news/202501221731077583">파이낸셜뉴스 · 한국소비자원 음식물처리기 9종 시험 (2025.1)</a></li>
+        <li><a href="https://www.ajd.co.kr/contents/basic-tip/detail/%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0_%EC%B6%94%EC%B2%9C_2026_%EA%B0%80%EA%B2%A9%C2%B7%EB%AF%B8%EC%83%9D%EB%AC%BC_%EB%B0%A9%EC%8B%9D%C2%B7%EC%A7%80%EC%9B%90%EA%B8%88%EA%B9%8C%EC%A7%80-94468">아정당 · 구매 전 확인할 3가지 (2026.10.1)</a></li>
         <li><a href="https://www.heraldk.com/article/2026040918390746870">헤럴드경제 · 지자체 보조금 사례</a></li>
         <li><a href="https://prod.danawa.com/info/?pcode=122708626">다나와 · 코웨이 제로 2L 필터 (74,500원)</a></li>
         <li><a href="https://prod.danawa.com/info/?pcode=108457397">다나와 · 스마트카라 스톤 필터 4개 (65,860원)</a></li>
@@ -628,39 +637,59 @@ const FACTS=[
  ['common','all','1회 전기료 비교','기준(1회·1시간·평균)과 투입량이 달라 비교 불가','cond',['ck','mus','kurly']]
 ];
 const PLANS={
- simple:{top:[['USP 우선순위',`<div class="pyr"><div class="p1"><b>1순위 · 디자인 (체험으로 증명)</b>360° 뷰어·AR 배치</div><div class="p2"><b>2순위 · 구매 불안 3가지</b>냄새 · 소음 · 공간</div><div class="p2"><b>3순위 · 관리·유지비 한 줄</b>필터 주기·연간 비용·세척</div><div class="p3"><b>기본 충족 (1블록)</b>용량 · 고온 · 자동 · 중간 투입 · 보관</div></div>`],
-  ['핵심 메시지',`<div class="callout"><b>"주방에 꺼내 두고 싶은 음식물처리기"</b><span>보여주는 디자인, 증명하는 성능</span></div><ul class="dots" style="margin-top:10px"><li>적합: 디자인·소재가 차별점인 프리미엄 제품</li><li>길이: 7블록 (전체안 대비 5블록 축소)</li><li>정보 보존: 스펙·FAQ는 접힘형</li></ul>`]],
-  rows:[['hero','디자인 히어로','오브제 컷 + 컬러·소재 전환','must',['첫 화면은 제품만, 문구 1줄','컬러를 누르면 3D 모델이 바로 전환','8개 경쟁 상세페이지 모두 정적 이미지뿐']],
-   ['life','우리 집에 두면','실측 치수·뚜껑 열림 높이','must',['구매 고려 요소: 좁은 주방','폭·높이·깊이 + 열림 높이 표기','AR로 싱크대 위 실제 크기 배치']],
-   ['feat','냄새 걱정 없는 이유','필터·밀폐 구조','opt',['구매 고려 1순위: 냄새','필터·밀폐 분해 뷰 1컷','탈취율은 시험 기관·조건과 한 줄']],
-   ['feat','조용하고 강하게','소음 dB + 처리 결과','2d',['측정 조건과 함께 dB 1개','뼈·국물 처리 결과 사진 3컷','블레이드는 짧은 영상으로 충분']],
-   ['feat','관리는 한 번에','필터 주기·연간 비용·세척','2d',['필터 주기 + 연간 유지비 한 줄','세척 3단계','분리 과정은 짧은 영상']],
-   ['trust','구매 확신','보증·A/S·보조금·가격','2d',['보증 기간·A/S망',"보조금은 '지자체별 상이' 명시",'실적이 쌓이면 리뷰 블록 추가']],
+ '2':{name:'2안 · 디자인 프리미엄형',top:[['USP 우선순위',`<div class="pyr"><div class="p1"><b>1순위 · 디자인을 돌려보며 확인</b>360° 뷰어 · 소재 클로즈업</div><div class="p2"><b>2순위 · 구매 불안 3가지</b>유지비 · 냄새 · 공간</div><div class="p2"><b>3순위 · 처리 성능 한 줄</b>처리 시간 · 소음</div><div class="p3"><b>기본 충족 (1블록)</b>용량 · 고온 · 자동 · 중간 투입 · 보관</div></div>`],
+  ['핵심 메시지',`<div class="callout"><b>"주방에 꺼내 두고 싶은 음식물처리기"</b><span>보여주는 디자인, 증명하는 성능</span></div><ul class="dots" style="margin-top:10px"><li>적합: 디자인·소재가 차별점인 프리미엄 제품</li><li>길이: 7블록 (1안 대비 5블록 축소)</li><li>3D: 360° 뷰어 1개만</li><li>스펙·FAQ는 접힘형</li></ul>`]],
+  rows:[['hero','디자인 히어로','오브제 컷 + 컬러·소재 전환','must',['첫 화면은 제품만, 문구 1줄','360° 뷰어로 돌려보며 마감 확인','경쟁 상세페이지는 모두 정적 이미지']],
+   ['life','우리 집에 두면','실측 치수·뚜껑 열림 높이','2d',['구매 고려: 설치 공간','폭·높이·깊이 + 열림 높이 도면 1장','실제 주방 설치 사진 2~3컷']],
+   ['feat','냄새 걱정 없는 이유','필터·밀폐 구조','2d',['구매 고려: 냄새·탈취','필터·밀폐 단면 일러스트 1컷','탈취율은 시험 기관·조건과 한 줄']],
+   ['feat','조용하고 강하게','처리 시간 + 소음 dB','2d',['처리 시간: 국물 포함 메뉴로 표기','dB는 측정 조건과 함께 1개','블레이드는 짧은 영상으로 충분']],
+   ['feat','관리비는 이만큼','필터 주기·연간 비용·세척','2d',['구매 고려 1순위: 유지비','필터 주기 + 연간 비용 한 줄','세척 3단계 짧은 영상']],
+   ['trust','구매 확신','보증·A/S·보조금','2d',['보증 기간·A/S망',"보조금은 '지자체별 상이' 명시",'실적이 쌓이면 리뷰 블록 추가']],
    ['info','더 알아보기 (접힘)','스펙·처리 불가 품목·FAQ','2d',['기본은 접힌 상태','눌러야 보이는 정보로 길이 축소']]],
-  d3:'<b>3D는 2개만 필수입니다.</b><span>사진으로 판단이 어려운 <b>외관(360° 뷰어)</b>과 <b>크기(AR 배치)</b>에만 씁니다. 필터 분해 뷰는 선택이고, 나머지는 영상·사진이 더 빠르고 저렴합니다.</span>',
-  head:['콘텐츠','블록','형식','3D 필요도','이유'],
-  content:[['360° 디자인 뷰어','01','3D 실시간 렌더','must','소재·마감은 사진으로 전달이 어려움'],['AR 우리 집 배치','02','모바일 AR','must','실제 크기·열림 높이 확인'],['필터·밀폐 분해 뷰','03','3D 분해 1컷','opt','냄새 차단 구조를 한눈에'],['처리 결과 사진','04','사진 3컷 + 수치','2d','뼈·국물 처리력 증명'],['소음 측정 카드','04','수치 1줄 + 조건','2d','소음 불안 해소'],['연간 유지비 카드','05','숫자 1줄 + 조건','2d','유지비 불안 해소'],['세척 3단계','05','짧은 영상','2d','관리 편의'],['보증·A/S·보조금','06','아이콘 3개 + 링크','2d','구매 확신']]},
- full:{top:[['USP 우선순위',`<div class="pyr"><div class="p1"><b>1순위 · 연간 유지비 공개</b>장수명 필터 + 동일 조건 전기료</div><div class="p2"><b>2순위 · 한식 실측 처리</b>국물·뼈·껍질 처리 시간 공개</div><div class="p2"><b>3순위 · 조건을 밝힌 냄새·소음</b>공인 시험, 측정 조건 표기</div><div class="p3"><b>기본 충족 (표 1장)</b>3L · 한 뼘 · 고온 · 자동 · 중간 투입 · 보관</div></div>`],
-  ['핵심 메시지',`<div class="callout"><b>"사는 날보다 쓰는 3년이 더 편한 음식물처리기"</b><span>비교 가능한 숫자 하나로 신뢰를 만드는 정보형</span></div><ul class="dots" style="margin-top:10px"><li>적합: 기능·가성비 중심 제품</li><li>길이: 12블록</li><li>위험: 정보량이 많아 모바일 이탈 가능</li></ul>`]],
+  d3:'<b>3D는 1개만 씁니다: 360° 디자인 뷰어.</b><span>사진으로 전달이 어려운 소재·마감에만 씁니다. 크기는 도면과 설치 사진, 필터 구조는 단면 일러스트로 충분합니다.</span>',
+  head:['콘텐츠','블록','형식','3D','이유'],
+  content:[['360° 디자인 뷰어','01','3D 실시간 렌더','must','소재·마감은 사진으로 전달이 어려움'],['실측 도면 + 설치 사진','02','도면 1장 + 사진 2~3컷','2d','설치 공간 확인'],['필터·밀폐 단면','03','일러스트 1컷','2d','냄새 차단 구조'],['처리 시간·소음 카드','04','숫자 + 조건','2d','성능 불안 해소'],['연간 유지비 카드','05','숫자 1줄 + 조건','2d','유지비 불안 해소'],['세척 3단계','05','짧은 영상','2d','관리 편의'],['보증·A/S·보조금','06','아이콘 3개 + 링크','2d','구매 확신']]},
+ '1':{name:'1안 · 신뢰 정보형',top:[['USP 우선순위',`<div class="pyr"><div class="p1"><b>1순위 · 연간 유지비 공개</b>장수명 필터 + 동일 조건 전기료</div><div class="p2"><b>2순위 · 한식 실측 처리</b>국물·뼈·껍질 처리 시간 공개</div><div class="p2"><b>3순위 · 조건을 밝힌 냄새·소음</b>공인 시험, 측정 조건 표기</div><div class="p3"><b>기본 충족 (표 1장)</b>용량 · 한 뼘 · 고온 · 자동 · 중간 투입 · 보관</div></div>`],
+  ['핵심 메시지',`<div class="callout"><b>"사는 날보다 쓰는 3년이 더 편한 음식물처리기"</b><span>비교 가능한 숫자로 신뢰를 만드는 정보형</span></div><ul class="dots" style="margin-top:10px"><li>적합: 기능·가성비 중심 제품</li><li>길이: 12블록</li><li>3D: 필터 구조 1컷 (선택)</li><li>위험: 정보량이 많아 모바일 이탈 가능</li></ul>`]],
   rows:[['hero','히어로','약속 1줄 + 증거 칩 3개','2d',['비교 가능한 숫자 1개 (예: 1년 유지비)','아래에 용량·폭·온도 칩',"보조금은 '지자체별 상이'와 함께 하단"]],
-   ['pain','구매 전 고민 5가지','누르면 답변으로 이동','2d',['냄새·전기료·국물·필터값·소음','쿠첸 상세페이지 방식 차용','긴 페이지 탐색 부담 감소']],
+   ['pain','구매 전 고민 5가지','누르면 답변으로 이동','2d',['유지비·냄새·공간·국물·소음','쿠첸 상세페이지 방식 차용','긴 페이지 탐색 부담 감소']],
    ['sum','USP 3 요약','숫자 + 조건 각주','2d',['유지비·한식 실측·냄새/소음','수치마다 측정 조건','채널 간 수치 통일']],
-   ['feat','유지비 계산기','사용 빈도 → 연간 비용','2d',['주 사용 횟수 선택','필터+전기료 연간 합계','경쟁 8개 상세페이지에 계산기 없음']],
+   ['feat','유지비 계산기','사용 빈도 → 연간 비용','2d',['주 사용 횟수 선택','필터+전기료 연간 합계','경쟁 상세페이지에 계산기 없음']],
    ['feat','한식 실측 테스트','메뉴별 전후·시간','2d',['국물·생선·수박 껍질 등 5종','투입·처리 시간·결과 무게',"코웨이는 '처리 가능'만 명시"]],
-   ['feat','냄새·소음 증명','측정 조건 공개','2d',['dB: 거리·모드와 함께','탈취율: 기관·가스 종류와 함께','미닉스 18/22.2dB 불일치 사례 방지']],
+   ['feat','냄새·소음 증명','측정 조건 공개','opt',['필터 구조 3D 분해 1컷 (선택)','dB: 거리·모드와 함께','미닉스 18/22.2dB 불일치 사례 방지']],
    ['cmp','기본 스펙 체크표','용량·자동·중간 투입','2d',['표 한 장으로 압축','공통 기능은 짧게']],
-   ['life','설치 시뮬레이션','실측 도면·열림 높이','opt',['폭·높이·깊이 + 열림 높이','스마트카라는 도어 12.5cm 소구','AR은 선택']],
+   ['life','설치 도면','실측 치수·열림 높이','2d',['폭·높이·깊이 + 열림 높이','스마트카라는 도어 12.5cm 소구','도면 1장 + 설치 사진']],
    ['info','넣어도 되는 것 / 안 되는 것','아이콘 그리드','2d',['뼈 처리는 브랜드마다 다름','코웨이 불가, 쿠첸·스마트카라 가능','오사용 불만 예방']],
    ['trust','보증·A/S·생산지','보증 기간·서비스망','2d',['보증 기간·A/S망','코웨이 1,450명·쿠쿠 120여 곳이 비교 기준']],
    ['auth','리뷰·전문가 평가','출시 초기엔 체험단','2d',['바이툴즈 방식(사전 체험단) 참고','실적이 쌓이면 상단으로 이동']],
    ['info','FAQ·스펙·보조금','접힘형','2d',['보조금 신청 방법','스펙 표·주의 사항']]],
-  d3:'<b>전체안은 3D 없이도 충분합니다.</b><span>설치 시뮬레이션만 선택적으로 AR을 쓰고, 나머지는 영상·표·인터랙티브 계산기로 구성합니다.</span>',
-  head:['콘텐츠','블록','형식','3D 필요도','이유'],
-  content:[['15초 히어로 숏폼','01','세로 영상','2d','투입→완료→결과물을 한 번에'],['고민 5가지 앵커','02','버튼 목록','2d','원하는 정보로 바로 이동'],['유지비 계산기','04','인터랙티브','2d','구매 후 비용 불안 해소'],['한식 5종 타임랩스','05','영상 + 표','2d','국물·뼈 처리 실증'],['측정 조건 카드','06','표','2d','소음·탈취 수치 신뢰'],['설치 시뮬레이터','08','AR 또는 도면','opt','우리 집 크기 확인'],['처리 가능/불가 아이콘','09','아이콘 그리드','2d','오사용 예방'],['보조금 안내','12','체크리스트 + 링크','2d','실구매가 인하']]}
+  d3:'<b>3D는 선택 1개뿐입니다: 필터 구조 분해 컷.</b><span>냄새 차단 구조를 보여줄 때만 씁니다. 나머지는 영상·표·계산기로 구성합니다.</span>',
+  head:['콘텐츠','블록','형식','3D','이유'],
+  content:[['15초 히어로 숏폼','01','세로 영상','2d','투입→완료→결과물을 한 번에'],['고민 5가지 앵커','02','버튼 목록','2d','원하는 정보로 바로 이동'],['유지비 계산기','04','인터랙티브','2d','구매 후 비용 불안 해소'],['한식 5종 타임랩스','05','영상 + 표','2d','국물·뼈 처리 실증'],['필터 구조 분해 컷','06','3D 1컷','opt','냄새 차단 구조'],['측정 조건 카드','06','표','2d','소음·탈취 수치 신뢰'],['설치 도면','08','도면 + 사진','2d','우리 집 크기 확인'],['처리 가능/불가 아이콘','09','아이콘 그리드','2d','오사용 예방'],['보조금 안내','12','체크리스트 + 링크','2d','실구매가 인하']]},
+ '3':{name:'3안 · 핵심 압축형',top:[['USP 우선순위',`<div class="pyr"><div class="p1"><b>1순위 · 유지비</b>필터 주기·가격 + 전기료 (조건 표기)</div><div class="p2"><b>2순위 · 냄새 · 공간 · 처리 시간</b>고려 요소 공동 2위를 블록 2개로</div><div class="p3"><b>마무리</b>보증 · 보조금 · 접힘 스펙</div></div>`],
+  ['핵심 메시지',`<div class="callout"><b>"고민 4가지에 숫자로 답하는 음식물처리기"</b><span>필수 정보만, 한 블록에 한 가지</span></div><ul class="dots" style="margin-top:10px"><li>적합: 광고 랜딩·라이브커머스·모바일 첫 유입</li><li>길이: 5블록</li><li>3D 없음: 사진·숫자 카드·도면만</li></ul>`]],
+  rows:[['hero','히어로','제품 컷 + 숫자 칩 3개','2d',['용량·폭·필터 주기 칩','문구 1줄, 버튼 1개']],
+   ['feat','관리비는 이만큼','필터 주기·가격·전기료','2d',['구매 고려 1순위: 유지비','연간 비용 한 줄 + 측정 조건']],
+   ['feat','냄새·소음','탈취·dB 시험 결과','2d',['시험 기관·조건과 함께','수치 2개만']],
+   ['life','공간·처리 시간','실측 치수 + 처리 시간','2d',['폭·높이·깊이 + 열림 높이','국물 포함 메뉴 처리 시간']],
+   ['trust','구매 확신 + 더 보기','보증·보조금·접힘 스펙','2d',["보조금은 '지자체별 상이' 명시",'스펙·FAQ는 접힘']]],
+  d3:'<b>3D 없음.</b><span>사진, 숫자 카드, 도면만으로 구성해 제작비와 페이지 무게를 줄입니다.</span>',
+  head:['콘텐츠','블록','형식','3D','이유'],
+  content:[['제품 대표 컷','01','사진 1장','2d','첫 인상'],['유지비 카드','02','숫자 1줄 + 조건','2d','구매 고려 1순위'],['시험 결과 카드','03','숫자 2개 + 조건','2d','냄새·소음 불안 해소'],['치수 도면','04','도면 1장','2d','설치 공간 확인'],['처리 시간 표','04','표','2d','국물 메뉴 포함'],['보증·보조금 아이콘','05','아이콘 + 링크','2d','구매 확신']]}
 };
+const CONS=[
+ ['비용','유지비 (필터·전기료)','필터 교체 부담 · 관리 비용 · 연간 에너지·필터 비용',['seg','ajd1','kca']],
+ ['위생','냄새·탈취','여름철 냄새 · 필터 탈취 성능',['seg','kca']],
+ ['공간','설치 공간·크기','좁은 주방에 들어가는지 · 설치 공간',['seg','ajd1']],
+ ['성능','처리 시간','제품별 최대 3.8배 차이 · 국물 많으면 지연',['kca','nd']],
+ ['비용','구매가·보조금','구매 가격 · 지자체·국가 보조금',['ajd1','kca']],
+ ['성능','소음','시험 제품 23~42dB',['kca']],
+ ['위생','내부 세척','세척 부담',['seg']]
+];
+const CSRC={seg:['세계일보','2026-05-03','https://www.segye.com/newsView/20260503501832'],ajd1:['아정당','2026-10-01','https://www.ajd.co.kr/contents/basic-tip/detail/%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0_%EC%B6%94%EC%B2%9C_2026_%EA%B0%80%EA%B2%A9%C2%B7%EB%AF%B8%EC%83%9D%EB%AC%BC_%EB%B0%A9%EC%8B%9D%C2%B7%EC%A7%80%EC%9B%90%EA%B8%88%EA%B9%8C%EC%A7%80-94468'],kca:['소비자원 시험 · 파이낸셜뉴스','2025-01-22','https://www.fnnews.com/news/202501221731077583'],nd:['뉴데일리','2026-02-25','https://biz.newdaily.co.kr/site/data/html/2026/02/25/2026022500160.amp.html']};
 const D3={must:['3D 필수','t-must'],opt:['3D 선택','t-opt'],'2d':['2D로 충분','t-2d']};
 
-let TAB='3l', GB=null, ROLE='all', PLAN='simple', FST='all';
+let TAB='3l', GB=null, ROLE='all', PLAN='2', FST='ok', RSEL=null;
 const SECS=[['summary','요약'],['spec','스펙'],['price','가격'],['usp','USP'],['pdp','PDP'],['fact','검증'],['proposal','제안'],['sources','출처']];
 let SEC=SECS.some(x=>x[0]===location.hash.slice(1))?location.hash.slice(1):'summary';
 const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -671,7 +700,7 @@ const onCls=b=>GB&&b===GB?'onc':'';
 const bchip=(b,t)=>`<span class="bchip b-${b}">${t||BRAND[b]}</span>`;
 const colHead=id=>{const p=P[id];return `<th class="${dimCls(p.b)}"><button class="colh ${GB===p.b?'sel':''}" data-gb="${p.b}">${bchip(p.b,p.short)}</button></th>`;};
 function grouped(rows,cell){let h='',prev='';const cnt={};rows.forEach(r=>cnt[r[0]]=(cnt[r[0]]||0)+1);
- rows.forEach((r,ri)=>{h+='<tr>';if(r[0]!==prev){h+=`<td class="cat" rowspan="${cnt[r[0]]}">${r[0]}</td>`;prev=r[0];}
+ rows.forEach((r,ri)=>{h+=`<tr data-cat="${r[0]}">`;if(r[0]!==prev){h+=`<td class="cat" rowspan="${cnt[r[0]]}">${r[0]}</td>`;prev=r[0];}
   h+=`<th class="row">${r[1]}</th>`+ids().map(id=>{const b=P[id].b;return `<td class="${dimCls(b)} ${onCls(b)}">${cell(r,id,ri)}</td>`}).join('')+(r.extra||'')+'</tr>';});return h;}
 
 function renderHeader(){
@@ -763,7 +792,7 @@ function renderPDP(){
 function renderFacts(){
  const brands=new Set(ids().map(id=>P[id].b));
  const all=FACTS.filter(f=>(f[0]==='common'||brands.has(f[0]))&&(f[1]==='all'||f[1]===TAB));
- const FS=[['all','전체'],['issue','불일치·확인 불가'],['cond','조건부'],['ok','확인']];
+ const FS=[['ok','확인'],['cond','조건부'],['issue','불일치·확인 불가'],['all','전체']];const ORD={ok:0,cond:1,bad:2,na:3};all.sort((a,b)=>ORD[a[4]]-ORD[b[4]]);
  document.getElementById('factSeg').innerHTML='<span class="lab">판정</span>'+FS.map(([k,v])=>`<button data-fst="${k}" aria-pressed="${FST===k}">${v} <b>${all.filter(f=>k==='all'||(k==='issue'?(f[4]==='bad'||f[4]==='na'):f[4]===k)).length}</b></button>`).join('');
  const rows=all.filter(f=>FST==='all'||(FST==='issue'?(f[4]==='bad'||f[4]==='na'):f[4]===FST));
  document.getElementById('factT').innerHTML=`<thead><tr><th class="lh" style="width:120px">브랜드</th><th class="lh">주장 / 데이터</th><th class="lh">대조 결과</th><th style="width:90px">판정</th><th class="lh" style="width:130px">근거</th></tr></thead><tbody>`+rows.map(f=>{const d=f[0]==='common'?(GB?'dimc':''):dimCls(f[0]);return `<tr class="${d}"><td class="lt">${f[0]==='common'?'<b>공통</b>':`<button class="colh ${GB===f[0]?'sel':''}" data-gb="${f[0]}">${bchip(f[0])}</button>`}</td><td class="lt"><b>${f[2]}</b></td><td class="lt" style="color:var(--ink-2)">${f[3]}</td><td><span class="chip ${ST[f[4]][1]}">${ST[f[4]][0]}</span></td><td class="lt">${f[5].map(k=>`<a href="${L[k][1]}">${L[k][0]}</a>`).join('<br>')}</td></tr>`}).join('')+'</tbody>';
@@ -776,7 +805,9 @@ function renderPlan(){
  document.getElementById('planTop').innerHTML=p.top.map(t=>`<div class="card"><h3 style="margin-bottom:10px">${t[0]}</h3>${t[1]}</div>`).join('');
  document.getElementById('planRows').innerHTML=`<div class="ph"><div>모바일 PDP 블록 (${p.rows.length}개)</div><div>구성 이유와 내용</div></div>`+p.rows.map((r,i)=>`<div class="pr"><div class="blk k-${r[0]}"><span class="n">${String(i+1).padStart(2,'0')}</span><div><b>${r[1]}</b><span>${r[2]}</span></div><span class="tag3d ${D3[r[3]][1]}">${D3[r[3]][0]}</span></div><div class="exp"><ul class="dots">${r[4].map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`).join('');
  document.getElementById('d3note').innerHTML=p.d3;
- document.getElementById('contentLabel').textContent=(PLAN==='simple'?'심플안':'전체안')+' 기준 · 탭을 바꾸면 목록도 바뀝니다';
+ document.getElementById('contentLabel').textContent=p.name+' 기준 · 안을 바꾸면 목록도 바뀝니다';
+ const cnt=CONS.map(c=>c[3].length);let rk=0,last=-1;const ranks=cnt.map((n,i)=>{if(n!==last){rk=i+1;last=n;}return rk;});
+ document.getElementById('consT').innerHTML='<thead><tr><th style="width:46px">순위</th><th class="lh">카테고리 · 고려 요소</th><th style="width:58px">출처 수</th><th class="lh">근거 · 날짜</th></tr></thead><tbody>'+CONS.map((c,i)=>`<tr title="${c[2]}"><td><span class="rk ${ranks[i]===1?'r1':''}">${ranks[i]}</span></td><td class="lt"><span class="ctag">${c[0]}</span><b>${c[1]}</b></td><td><span class="cnt">${[1,2,3].map(k=>`<i class="${k<=c[3].length?'on':''}"></i>`).join('')}</span></td><td class="lt">${c[3].map(k=>`<span class="srcd"><a href="${CSRC[k][2]}" target="_blank" rel="noopener">${CSRC[k][0]}</a><time>${CSRC[k][1]}</time></span>`).join('')}</td></tr>`).join('')+'</tbody>';
  document.getElementById('contentT').innerHTML=`<thead><tr>${p.head.map((h,i)=>`<th class="${i===0||i===4?'lh':''}">${h}</th>`).join('')}</tr></thead><tbody>`+p.content.map(r=>`<tr><th class="row">${r[0]}</th><td>${r[1]}</td><td>${r[2]}</td><td><span class="tag3d ${D3[r[3]][1]}">${D3[r[3]][0]}</span></td><td class="lt">${r[4]}</td></tr>`).join('')+'</tbody>';
 }
 function renderSources(){
@@ -791,13 +822,16 @@ function renderNav(){
  document.getElementById('pager').innerHTML=(pv?`<button data-sec="${pv[0]}"><small>← 이전</small>${pv[1]}</button>`:'')+(nx?`<button class="nx" data-sec="${nx[0]}"><small>다음 →</small>${nx[1]}</button>`:'');
 }
 function goSec(k,top){SEC=k;renderNav();history.replaceState(null,'','#'+k);if(top)window.scrollTo({top:0,behavior:'auto'});}
-function renderAll(){renderNav();renderHeader();renderSummary();renderProducts();renderPrice();renderUSP();renderPDP();renderFacts();renderPlan();}
+function applyRSel(){document.querySelectorAll('.rowfoc').forEach(t=>{const on=RSEL&&RSEL.t===t.id;t.classList.toggle('hassel',!!on);t.querySelectorAll('tbody tr').forEach((tr,i)=>tr.classList.toggle('rsel',!!on&&(RSEL.cat?tr.dataset.cat===RSEL.cat:i===RSEL.i)));});}
+function renderAll(){renderNav();renderHeader();renderSummary();renderProducts();renderPrice();renderUSP();renderPDP();renderFacts();renderPlan();applyRSel();}
 function setGB(b){GB=(b==='all'||GB===b)?null:b;renderAll();}
 document.addEventListener('click',e=>{
  const g=e.target.closest('[data-gb]');if(g){setGB(g.dataset.gb);return;}
  const t=e.target.closest('[data-tab]');if(t){TAB=t.dataset.tab;if(GB&&!ids().some(id=>P[id].b===GB))GB=null;renderAll();return;}
- const r=e.target.closest('[data-role]');if(r){ROLE=r.dataset.role;renderPDP();return;}
- const pl=e.target.closest('[data-plan]');if(pl){PLAN=pl.dataset.plan;renderPlan();return;}
+ const r=e.target.closest('[data-role]');if(r){ROLE=r.dataset.role;renderPDP();applyRSel();return;}
+ const pl=e.target.closest('[data-plan]');if(pl){PLAN=pl.dataset.plan;renderPlan();applyRSel();return;}
+ const rh=e.target.closest('.rowfoc tbody th.row, .rowfoc tbody td.cat');if(rh&&rh.closest('table').id!=='momT'){const t=rh.closest('table'),tr=rh.closest('tr');const n=rh.matches('td.cat')?{t:t.id,cat:tr.dataset.cat}:{t:t.id,i:[...t.tBodies[0].rows].indexOf(tr)};
+  const same=RSEL&&RSEL.t===n.t&&RSEL.cat===n.cat&&RSEL.i===n.i;RSEL=same?null:n;if(GB){GB=null;renderAll();}else applyRSel();return;}
  const sc=e.target.closest('[data-sec]');if(sc){goSec(sc.dataset.sec,true);return;}
  const pn=e.target.closest('[data-pane]');if(pn){selPane(pn);return;}
  const fs=e.target.closest('[data-fst]');if(fs){FST=fs.dataset.fst;renderFacts();return;}
