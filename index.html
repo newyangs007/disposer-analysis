@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>음식물처리기 4사 경쟁 분석</title>
+<title>음식물처리기 경쟁 분석</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: 리서치 리포트 — 요약 먼저, 표는 카테고리 그룹 + 가운데 정렬, 브랜드 색은 데이터 식별용으로만 */
+/* Layout idea: 고정 헤더(제목·용량 탭·브랜드 선택) + 카테고리 묶음 표. 브랜드 하나를 고르면 페이지 전체가 그 브랜드로 강조 */
 :root{
   color-scheme: light;
   --bg:#f4f5f6; --surface:#fcfcfb; --surface-2:#eff1f3; --ink:#14171c; --ink-2:#4b5059; --ink-3:#7b818b;
   --line:#e0e3e7; --accent:#0d5c63; --accent-soft:#e3eff0;
-  --minix:#2a78d6; --cuckoo:#eb6834; --cuchen:#1baf7a; --bitools:#52514e;
+  --minix:#2a78d6; --cuckoo:#eb6834; --cuchen:#1baf7a; --coway:#eda100; --smartcara:#6250d6; --bitools:#52514e;
   --ok:#0a7a3d; --ok-bg:#e3f4e9; --warn:#8f5b00; --warn-bg:#fcf0d6; --bad:#b42318; --bad-bg:#fde7e4; --na:#5b6270; --na-bg:#eceef1;
   --font-display:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --font-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
@@ -24,7 +24,7 @@
     color-scheme: dark;
     --bg:#111316; --surface:#1a1a19; --surface-2:#232529; --ink:#eef0f2; --ink-2:#b9bec6; --ink-3:#8c929c;
     --line:#32353b; --accent:#5cc2c9; --accent-soft:#16363a;
-    --minix:#3987e5; --cuckoo:#d95926; --cuchen:#199e70; --bitools:#a6a8ad;
+    --minix:#3987e5; --cuckoo:#d95926; --cuchen:#199e70; --coway:#c98500; --smartcara:#9085e9; --bitools:#a6a8ad;
     --ok:#5fd18f; --ok-bg:#12321f; --warn:#f0b54a; --warn-bg:#3a2c0d; --bad:#ff8a7d; --bad-bg:#3d1712; --na:#aab0ba; --na-bg:#272a2f;
   }
 }
@@ -32,926 +32,704 @@
   color-scheme: dark;
   --bg:#111316; --surface:#1a1a19; --surface-2:#232529; --ink:#eef0f2; --ink-2:#b9bec6; --ink-3:#8c929c;
   --line:#32353b; --accent:#5cc2c9; --accent-soft:#16363a;
-  --minix:#3987e5; --cuckoo:#d95926; --cuchen:#199e70; --bitools:#a6a8ad;
+  --minix:#3987e5; --cuckoo:#d95926; --cuchen:#199e70; --coway:#c98500; --smartcara:#9085e9; --bitools:#a6a8ad;
   --ok:#5fd18f; --ok-bg:#12321f; --warn:#f0b54a; --warn-bg:#3a2c0d; --bad:#ff8a7d; --bad-bg:#3d1712; --na:#aab0ba; --na-bg:#272a2f;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
 h1,h2,h3,h4{font-family:var(--font-display);text-wrap:balance;margin:0;line-height:1.3}
-h1{font-size:32px;font-weight:700;letter-spacing:-.02em}
-h2{font-size:24px;font-weight:700;letter-spacing:-.01em}
-h3{font-size:17px;font-weight:700}
+h2{font-size:22px;font-weight:700}
+h3{font-size:16px;font-weight:700}
 h4{font-size:14px;font-weight:700}
 p{margin:0}
-ul.dots{margin:0;padding-left:18px;display:grid;gap:4px}
+ul.dots{margin:0;padding-left:18px;display:grid;gap:3px}
 ul.dots li{color:var(--ink-2);font-size:13.5px}
 ul.dots li b{color:var(--ink)}
-.mono{font-family:var(--font-mono)}
 small,.fine{font-size:12px;color:var(--ink-3)}
 a{color:var(--accent);text-underline-offset:2px}
-a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-header.top{background:var(--surface);border-bottom:1px solid var(--line)}
-header.top .wrap{padding-top:36px;padding-bottom:28px;display:grid;gap:14px}
-.meta{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--ink-2);font-size:13px}
-.meta b{color:var(--ink)}
-nav.toc{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
-nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:8px;padding-bottom:8px;scrollbar-width:none}
-nav.toc a{white-space:nowrap;text-decoration:none;color:var(--ink-2);font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px}
+header.top{position:sticky;top:0;z-index:30;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.hrow{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.hrow + .hrow{border-top:1px solid var(--line);padding-top:8px;padding-bottom:8px}
+.title{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-right:auto}
+.title h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.title .fine{font-family:var(--font-mono)}
+.cap{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:3px}
+.cap button{border:0;background:none;border-radius:999px;padding:6px 16px;font-size:13.5px;font-weight:700;color:var(--ink-2);cursor:pointer}
+.cap button small{font-weight:500;margin-left:4px;color:inherit;opacity:.8}
+.cap button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chips .lab{font-size:12px;color:var(--ink-3);font-weight:600;margin-right:2px}
+.chip-b{border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip-b:hover{border-color:var(--ink-3);color:var(--ink)}
+.chip-b[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.chip-b .sw{width:9px;height:9px;border-radius:3px;background:var(--c)}
+nav.toc{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+nav.toc a{white-space:nowrap;text-decoration:none;color:var(--ink-2);font-size:12.5px;font-weight:600;padding:5px 8px;border-radius:6px}
 nav.toc a:hover{background:var(--surface-2);color:var(--ink)}
-nav.toc a .ix{font-family:var(--font-mono);color:var(--ink-3);margin-right:4px}
 
-section{padding:44px 0 8px}
-section[id]{scroll-margin-top:52px}
-.sec-head{display:grid;gap:8px;margin-bottom:20px;max-width:780px}
+section{padding:36px 0 6px;scroll-margin-top:118px}
+.sec-head{display:grid;gap:6px;margin-bottom:16px;max-width:820px}
 .sec-head .ix{font-family:var(--font-mono);font-size:12px;color:var(--accent);font-weight:600;letter-spacing:.06em}
-.sec-head p{color:var(--ink-2)}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px}
-.grid{display:grid;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.grid{display:grid;gap:12px}
 .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
-@media (max-width:900px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:620px){.g2,.g4{grid-template-columns:1fr}h1{font-size:26px}}
-.sub-h{margin:30px 0 12px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px}
+.gauto{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+@media (max-width:700px){.g2{grid-template-columns:1fr}}
+.sub-h{margin:26px 0 10px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
 .sub-h small{font-weight:400}
-
-.take{display:grid;gap:10px;border-top:3px solid var(--accent);align-content:start}
-.take .k{font-family:var(--font-mono);font-size:12px;color:var(--ink-3)}
-.take h3{font-size:16px}
 
 .bchip{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:13px;white-space:nowrap}
 .bchip::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}
-.b-minix{--c:var(--minix)}.b-cuckoo{--c:var(--cuckoo)}.b-cuchen{--c:var(--cuchen)}.b-bitools{--c:var(--bitools)}
+.b-minix{--c:var(--minix)}.b-cuckoo{--c:var(--cuckoo)}.b-cuchen{--c:var(--cuchen)}.b-coway{--c:var(--coway)}.b-smartcara{--c:var(--smartcara)}.b-bitools{--c:var(--bitools)}
+[data-gb]{cursor:pointer}
+.dimc{opacity:.22;transition:opacity .15s}
+.onc{background:var(--accent-soft)!important}
 
-.prod{display:grid;gap:10px;border-top:4px solid var(--c);align-content:start}
-.prod .model{font-family:var(--font-mono);font-size:12px;color:var(--ink-3)}
-.prod h3{font-size:18px}
-.prod .tag{font-size:13px;color:var(--ink-2);border-left:2px solid var(--c);padding-left:8px}
-.prod dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:13px}
+.take{display:grid;gap:8px;border-top:3px solid var(--accent);align-content:start}
+.take .k{font-family:var(--font-mono);font-size:12px;color:var(--ink-3)}
+
+.prod{display:grid;gap:8px;border-top:4px solid var(--c);align-content:start;transition:opacity .15s,box-shadow .15s}
+.prod:hover{box-shadow:0 0 0 2px var(--c)}
+.prod.sel{box-shadow:0 0 0 3px var(--c)}
+.prod .model{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-3)}
+.prod h3{font-size:16px}
+.prod .tag{font-size:12.5px;color:var(--ink-2);border-left:2px solid var(--c);padding-left:8px}
+.prod dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:0;font-size:12.5px}
 .prod dt{color:var(--ink-3)} .prod dd{margin:0;font-weight:600}
 
-/* tables */
 .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
-table{border-collapse:collapse;width:100%;font-size:13.5px}
-th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:middle;text-align:center}
 thead th{background:var(--surface-2);font-size:12.5px;color:var(--ink-2);font-weight:700}
-tbody tr:last-child td{border-bottom:0}
-th.row{font-weight:600;color:var(--ink);white-space:nowrap}
-.ctr th:not(.row):not(.cat),.ctr td{text-align:center}
-.ctr thead th:first-child{text-align:left}
-tr.grp th{background:var(--surface-2);color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.04em;text-align:left;padding:7px 12px}
-td.cat{color:var(--ink-3);font-size:12px;font-weight:600;white-space:nowrap;border-right:1px solid var(--line);text-align:left}
+tbody tr:last-child td,tbody tr:last-child th{border-bottom:0}
+th.row{font-weight:600;color:var(--ink);white-space:nowrap;text-align:left}
+td.cat{color:var(--ink-3);font-size:12px;font-weight:600;white-space:nowrap;border-right:1px solid var(--line);text-align:left;background:var(--surface)}
+th.lh,td.lt{text-align:left}
+.rowfoc tbody tr:hover > th.row,.rowfoc tbody tr:hover > td:not(.cat){background:var(--accent-soft)}
+.rowfoc tbody tr:hover > th.row{box-shadow:inset 3px 0 0 var(--accent)}
 .best{color:var(--accent);font-weight:700}
 .best::after{content:" ★";font-size:10px}
 .tick{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ok-bg);color:var(--ok);font-weight:700;font-size:13px}
 .dash{color:var(--ink-3)}
 .foot{font-size:12px;color:var(--ink-3);margin-top:8px}
-.foot ul{margin:4px 0 0;padding-left:16px}
+.colh{display:inline-flex;align-items:center;gap:6px;border:1px solid transparent;border-radius:999px;padding:3px 9px;background:none;font:inherit;color:inherit;cursor:pointer}
+.colh:hover{border-color:var(--ink-3)}
+.colh.sel{background:var(--ink);color:var(--surface)}
 
-/* rating dots */
 .rate{display:inline-flex;gap:3px;vertical-align:middle}
 .rate i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--ink-2);display:block}
 .rate i.on{background:var(--ink-2)}
 .rate.r3 i.on{background:var(--accent);border-color:var(--accent)}
-.rate-lab{display:block;font-size:11px;color:var(--ink-3);margin-top:2px}
 .legend-rate{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--ink-2);margin-bottom:10px;align-items:center}
 
-/* spec bars */
-.specbars{display:grid;gap:18px}
-.sb h4{margin-bottom:8px;display:flex;justify-content:space-between;gap:8px}
-.sb h4 span{font-weight:500;color:var(--ink-3);font-size:12px}
-.sb-row{display:grid;grid-template-columns:92px 1fr 70px;align-items:center;gap:10px;font-size:13px;margin:5px 0}
-.sb-track{height:12px;background:var(--surface-2);border-radius:4px}
-.sb-fill{height:100%;border-radius:4px;background:var(--c)}
-.sb-val{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-
-.stat{display:grid;gap:4px}
+.stat{display:grid;gap:3px;text-align:left;font:inherit;color:inherit;border-top:4px solid var(--c);transition:opacity .15s,box-shadow .15s}
+.stat:hover{box-shadow:0 0 0 2px var(--c)}
+.stat.sel{box-shadow:0 0 0 3px var(--c)}
 .stat .lab{font-size:12.5px;color:var(--ink-2);font-weight:600}
-.stat .big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .big{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
 .stat .sub{font-size:12px;color:var(--ink-3)}
-.delta-dn{color:var(--bad)}
+.up{color:var(--ok)} .dn{color:var(--bad)}
 
-/* chart */
 .chart{position:relative}
 .chart svg{display:block;width:100%;height:auto;overflow:visible}
 .chart .axis text{fill:var(--ink-3);font-size:11px;font-family:var(--font-body)}
-.chart .grid line{stroke:var(--line);stroke-width:1}
+.chart .gridl line{stroke:var(--line);stroke-width:1}
 .chart .lbl{font-size:11.5px;font-weight:700;fill:var(--ink);font-family:var(--font-body)}
 .chart .lbl2{font-size:11px;fill:var(--ink-2);font-family:var(--font-body)}
 .tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:0 6px 18px rgba(0,0,0,.12);min-width:170px;display:none;z-index:5}
 .tip .t{font-weight:700;margin-bottom:4px}
 .tip .r{display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums}
 .tip .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
-.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-2);margin:4px 0 10px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink-2);margin:4px 0 10px}
 .legend span{display:inline-flex;align-items:center;gap:6px}
-.legend i{display:inline-block;width:18px;height:0;border-top:2px solid var(--c)}
-.legend i.dashl{border-top-style:dashed}
-details.tv{margin-top:10px}
-details.tv summary{cursor:pointer;font-size:12.5px;color:var(--accent);font-weight:600}
+.legend i{display:inline-block;width:18px;height:0;border-top:2.5px solid var(--c)}
+.nodata{position:absolute;inset:42% 0 auto 0;text-align:center;font-size:13px;color:var(--ink-2);font-weight:600;pointer-events:none}
+.mom{display:block;font-size:10.5px;font-weight:600}
+.mtbl td{font-variant-numeric:tabular-nums;padding:7px 8px}
+.mtbl td.p{font-weight:600}
 
-.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .st-ok{color:var(--ok);background:var(--ok-bg)} .st-warn{color:var(--warn);background:var(--warn-bg)}
 .st-bad{color:var(--bad);background:var(--bad-bg)} .st-na{color:var(--na);background:var(--na-bg)}
 
-.rank{display:grid;gap:7px;counter-reset:r;padding:0;margin:0}
-.rank li{list-style:none;display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start;font-size:13.5px}
-.rank li::before{counter-increment:r;content:counter(r);font-family:var(--font-mono);font-weight:600;font-size:12px;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:var(--c);color:#fff}
+.uspc{display:grid;gap:10px;align-content:start;border-top:4px solid var(--c);transition:opacity .2s,box-shadow .2s}
+.uspgrid:hover .uspc:not(:hover){opacity:.3}
+.uspc:hover{box-shadow:0 0 0 2px var(--c)}
+.uspc.sel{box-shadow:0 0 0 3px var(--c)}
+.rank{display:grid;gap:6px;counter-reset:r;padding:0;margin:0}
+.rank li{list-style:none;display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;font-size:13px}
+.rank li::before{counter-increment:r;content:counter(r);font-family:var(--font-mono);font-weight:600;font-size:11.5px;width:21px;height:21px;border-radius:6px;display:grid;place-items:center;background:var(--c);color:#fff}
 .rank li b{display:block}
 .rank li span{color:var(--ink-3);font-size:12px}
-.diff{border-top:1px solid var(--line);padding-top:10px;display:grid;gap:4px}
+.diff{border-top:1px solid var(--line);padding-top:8px;display:grid;gap:4px}
 .diff b{font-size:12px;color:var(--ink-3)}
 
-/* segmented filters */
 .seg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;align-items:center}
 .seg .lab{font-size:12px;color:var(--ink-3);font-weight:600;margin-right:4px}
-.seg button{border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.seg button:hover{border-color:var(--ink-3);color:var(--ink)}
+.seg button{border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:999px;cursor:pointer;border-left:4px solid var(--kc,var(--line))}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
-.seg button .sw{width:9px;height:9px;border-radius:3px;background:var(--c)}
-
-/* PDP flow */
-.flow{display:grid;gap:16px}
-.lane{display:grid;grid-template-columns:160px 1fr;gap:14px;align-items:start;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.lane:last-child{border-bottom:0;padding-bottom:0}
+.lane{display:grid;grid-template-columns:170px 1fr;gap:14px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line);transition:opacity .15s}
+.lane:last-child{border-bottom:0}
 .lane .who{display:grid;gap:4px;justify-items:start}
-.lane .who button{background:none;border:0;padding:0;cursor:pointer;text-align:left;color:var(--ink)}
-.lane .who button:hover .bchip{text-decoration:underline}
 .lane .who .logic{font-size:12px;color:var(--ink-2)}
 .steps{display:flex;flex-wrap:wrap;gap:5px}
-.step{font-size:12px;line-height:1.35;padding:6px 9px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);max-width:170px;border-left:4px solid var(--kc)}
+.step{font-size:12px;line-height:1.35;padding:5px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);max-width:170px;border-left:4px solid var(--kc)}
 .step .n{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-3);display:block}
-.step.dim{opacity:.18}
+.step.dim{opacity:.15}
+.mix{display:flex;flex-wrap:wrap;gap:3px;max-width:165px}
+.mix span{font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--line);border-left:3px solid var(--kc);color:var(--ink-2);white-space:nowrap}
+.mix span b{color:var(--ink);font-family:var(--font-mono)}
 .k-auth{--kc:#d99a2b}.k-hero{--kc:#3b7dd8}.k-pain{--kc:#d4556b}.k-sum{--kc:#3f9a4a}.k-cmp{--kc:#7a5fd0}.k-feat{--kc:#8a9099}.k-life{--kc:#1f9c99}.k-trust{--kc:#8c6b3f}.k-info{--kc:#c3c7cd}
-.seg button.kbtn{border-left:4px solid var(--kc)}
 @media (max-width:700px){.lane{grid-template-columns:1fr}}
 
-/* tabs */
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:18px}
+.tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:16px}
 .tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 18px;font-size:14.5px;font-weight:700;color:var(--ink-3);cursor:pointer;margin-bottom:-1px}
 .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
 .tabs button small{display:block;font-weight:500;font-size:11.5px}
-.panel[hidden]{display:none}
 
+.plan{display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.plan .ph{display:grid;grid-template-columns:1fr 1fr;background:var(--surface-2);font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.plan .ph div{padding:9px 14px}
+.plan .pr{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+.plan .pr:hover{background:var(--accent-soft)}
+.plan .blk{display:grid;grid-template-columns:30px 1fr auto;gap:8px;align-items:start;padding:12px 14px;border-right:1px solid var(--line);border-left:5px solid var(--kc)}
+.plan .blk .n{font-family:var(--font-mono);font-weight:600;color:var(--ink-3);font-size:13px}
+.plan .blk b{display:block;font-size:14px}
+.plan .blk span{font-size:12.5px;color:var(--ink-2)}
+.plan .exp{padding:12px 14px}
+.tag3d{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;padding:1px 6px;white-space:nowrap;height:fit-content}
+.plan .blk span.tag3d{font-size:11px}
+.t-must{color:#fff!important;background:var(--accent)}
+.t-opt{color:var(--accent)!important;border:1px solid var(--accent)}
+.t-2d{color:var(--ink-3)!important;border:1px solid var(--line)}
+@media (max-width:700px){.plan .ph,.plan .pr{grid-template-columns:1fr}.plan .blk{border-right:0;border-bottom:1px dashed var(--line)}}
 .pyr{display:grid;gap:6px;justify-items:center}
-.pyr div{padding:12px 16px;border-radius:8px;text-align:center;font-size:13.5px;width:100%;border:1px solid var(--line)}
-.pyr .p1{max-width:60%;background:var(--accent);color:#fff;border-color:var(--accent)}
-.pyr .p2{max-width:80%;background:var(--accent-soft)}
+.pyr div{padding:10px 14px;border-radius:8px;text-align:center;font-size:13px;width:100%;border:1px solid var(--line)}
+.pyr .p1{max-width:62%;background:var(--accent);color:#fff;border-color:var(--accent)}
+.pyr .p2{max-width:82%;background:var(--accent-soft)}
 .pyr .p3{background:var(--surface-2)}
-.pyr b{display:block;font-size:14.5px}
+.pyr b{display:block;font-size:14px}
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 16px;border-radius:0 8px 8px 0;font-size:13.5px;display:grid;gap:4px}
 
-.wf{display:grid;grid-template-columns:300px 1fr;gap:18px;align-items:start}
-@media (max-width:780px){.wf{grid-template-columns:1fr}}
-.phone{width:300px;max-width:100%;border:10px solid var(--ink);border-radius:30px;background:var(--surface);padding:10px 8px;display:grid;gap:6px;margin:0 auto}
-.phone .blk{border-radius:6px;padding:8px 10px;font-size:12px;line-height:1.35;display:grid;grid-template-columns:22px 1fr;gap:6px;border:1px solid var(--line);border-left:4px solid var(--kc);background:var(--surface)}
-.phone .blk .n{font-family:var(--font-mono);font-weight:600;color:var(--ink-3)}
-.phone .blk b{display:block;font-size:12.5px}
-.phone .blk .d3{display:inline-block;margin-top:3px;font-size:10.5px;font-weight:700;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:0 4px}
-.notes{display:grid;gap:0}
-.notes .item{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
-.notes .item:first-child{padding-top:0}
-.notes .item:last-child{border-bottom:0}
-.notes .item .n{font-family:var(--font-mono);font-weight:600;color:var(--accent);font-size:13px}
-.notes .item h4{margin-bottom:6px}
-.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 16px;border-radius:0 8px 8px 0;font-size:13.5px;display:grid;gap:6px}
-.tag3d{display:inline-block;font-size:11px;font-weight:700;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:0 5px;white-space:nowrap}
-
-.src{margin:0;padding-left:18px;display:grid;gap:6px}
+.src{margin:0;padding-left:18px;display:grid;gap:5px}
 .src li{font-size:13px;color:var(--ink-2)}
-/* focus interactions */
-.colbtn{background:none;border:1px solid transparent;cursor:pointer;font:inherit;color:inherit;padding:4px 10px;border-radius:999px;display:inline-flex;align-items:center;gap:6px}
-.colbtn:hover{border-color:var(--ink-3)}
-.colbtn[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
-.colbtn[aria-pressed="true"] .bchip{color:var(--surface)}
-.foc td[data-c],.foc th[data-c]{transition:opacity .15s,background .15s}
-.foc td.dimc,.foc th.dimc{opacity:.2}
-.foc td.onc{background:var(--accent-soft)}
-.foc-hint{font-size:12px;color:var(--ink-3);margin:-4px 0 8px}
-.stat.pick{cursor:pointer;transition:opacity .15s,box-shadow .15s;text-align:left;font:inherit;color:inherit;border:1px solid var(--line)}
-.stat.pick:hover{box-shadow:0 0 0 2px var(--line)}
-.stat.pick[aria-pressed="true"]{box-shadow:0 0 0 2px var(--accent)}
-.stat.pick.dimc{opacity:.3}
-.nodata{position:absolute;inset:40% 0 auto 0;text-align:center;font-size:13px;color:var(--ink-2);font-weight:600;pointer-events:none}
-.uspgrid .uspcard{transition:opacity .2s,box-shadow .2s;cursor:default}
-.uspgrid:hover .uspcard:not(:hover),.uspgrid:focus-within .uspcard:not(:focus-within){opacity:.3}
-.uspgrid .uspcard:hover,.uspgrid .uspcard:focus-within{box-shadow:0 0 0 2px var(--c)}
-.mix{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;max-width:150px}
-.mix span{font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--line);border-left:3px solid var(--kc);color:var(--ink-2);white-space:nowrap}
-.mix span b{color:var(--ink);font-family:var(--font-mono)}
-/* row hover compare */
-.rowfoc tbody tr{transition:opacity .12s}
-.rowfoc tbody:hover tr:not(:hover) > :not(.cat):not(.dimc){opacity:.45}
-.rowfoc tbody tr:hover > th.row,.rowfoc tbody tr:hover > td[data-c]{background:var(--accent-soft)}
-.rowfoc tbody tr:hover > th.row{box-shadow:inset 3px 0 0 var(--accent)}
-.prod.pick{cursor:pointer;text-align:left;font:inherit;color:inherit;transition:opacity .15s,box-shadow .15s}
-.prod.pick:hover{box-shadow:0 0 0 2px var(--c)}
-.prod.pick[aria-pressed="true"]{box-shadow:0 0 0 3px var(--c)}
-.prod.pick.dimc{opacity:.35}
-.sb-row{transition:opacity .15s}.sb-row.dimc{opacity:.2}
-.gbar{display:none;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 8px 6px 14px;margin-top:12px;width:fit-content}
-.gbar.on{display:flex}
-.gbar button{border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink)}
-.notes .item.pickn{cursor:pointer;border-radius:8px;padding-left:8px;padding-right:8px;margin:0 -8px;transition:background .15s}
-.notes .item.pickn:hover{background:var(--surface-2)}
-.notes .item.pickn[aria-pressed="true"]{background:var(--accent-soft)}
-.notes .item.pickn .go{font-size:11.5px;color:var(--accent);font-weight:600;margin-top:4px;display:block}
 footer{padding:40px 0 60px;color:var(--ink-3);font-size:12px}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 </style>
 </head>
 <body>
 
 <header class="top">
   <div class="wrap">
-    <div class="fine mono">COMPETITIVE TEARDOWN · FOOD WASTE DISPOSER · 2026.11</div>
-    <h1>음식물처리기 4사 경쟁 분석</h1>
-    <ul class="dots" style="max-width:780px">
-      <li><b>대상</b> 미닉스·쿠쿠·쿠첸·바이툴즈의 대표 건조분쇄형 모델</li>
-      <li><b>범위</b> 스펙, 다나와 가격 추이(2026.1~11), 공식 상세페이지(PDP)의 USP 순서, 주장 검증</li>
-      <li><b>제안</b> 신규 음식물처리기 PDP 1안(전체안)·2안(심플안)</li>
-    </ul>
-    <div class="meta">
-      <span><b>기준일</b> 2026-11-18</span>
-      <span><b>가격</b> 다나와 '최저가 추이' 차트 값</span>
-      <span><b>표기</b> 제조사 주장 수치는 '제조사'로 구분</span>
+    <div class="hrow">
+      <div class="title"><h1>음식물처리기 경쟁 분석</h1><span class="fine">기준일 2026-11-20 · 다나와·공식 상세페이지</span></div>
+      <div class="cap" role="group" aria-label="용량 선택" id="capTabs">
+        <button data-tab="3l" aria-pressed="true">3L급<small>3L·2.7L</small></button>
+        <button data-tab="2l" aria-pressed="false">2L급<small>2L·1.5L</small></button>
+      </div>
+    </div>
+    <div class="hrow">
+      <div class="chips" id="brandChips" role="group" aria-label="브랜드 선택"></div>
+      <nav class="toc" aria-label="목차">
+        <a href="#summary">요약</a><a href="#spec">스펙</a><a href="#price">가격</a><a href="#usp">USP</a><a href="#pdp">PDP</a><a href="#fact">검증</a><a href="#proposal">제안</a><a href="#sources">출처</a>
+      </nav>
     </div>
   </div>
 </header>
 
-<nav class="toc" aria-label="목차">
-  <div class="wrap">
-    <a href="#summary"><span class="ix">00</span>요약</a>
-    <a href="#spec"><span class="ix">01</span>스펙·기능</a>
-    <a href="#price"><span class="ix">02</span>가격 추이</a>
-    <a href="#usp"><span class="ix">03</span>USP·차별점</a>
-    <a href="#pdp"><span class="ix">04</span>PDP 로직</a>
-    <a href="#fact"><span class="ix">05</span>주장 검증</a>
-    <a href="#proposal"><span class="ix">06</span>신제품 제안</a>
-    <a href="#sources"><span class="ix">07</span>출처</a>
-  </div>
-</nav>
-
 <main class="wrap">
 
-<!-- 00 -->
 <section id="summary">
-  <div class="sec-head"><span class="ix">00 · 요약</span><h2>한눈에 보는 결론</h2></div>
-  <div class="grid g4">
-    <div class="card take"><span class="k">스펙</span><h3>3L·한 뼘·고온은 이미 기본값</h3>
-      <ul class="dots"><li>3L급 4종 모두 폭 18~20cm</li><li>차이는 건조 온도(130~165℃)</li><li>블레이드 구조, 자동화 방식에서 갈림</li></ul></div>
-    <div class="card take"><span class="k">가격</span><h3>정가 70만원대, 실판매 40만원대</h3>
-      <ul class="dots"><li>정가 69.9~76.9만원, 할인율 41~45%</li><li>쿠쿠: 10월 일시 특가 폭이 큼</li><li>쿠첸: 39.9만원선 유지</li></ul></div>
-    <div class="card take"><span class="k">USP</span><h3>PDP 시작점이 서로 다름</h3>
-      <ul class="dots"><li>미닉스·쿠쿠: '1위'로 시작</li><li>쿠첸: 사용자 질문으로 시작</li><li>바이툴즈: 모기업 JMW 기술로 시작</li></ul></div>
-    <div class="card take"><span class="k">기회</span><h3>유지비·한식·디자인 증명</h3>
-      <ul class="dots"><li>필터·전기료 표기 조건이 제각각</li><li>국물 많은 한식 처리 실측이 없음</li><li>인터랙티브 3D·AR PDP는 4사 모두 없음</li></ul></div>
-  </div>
+  <div class="sec-head"><span class="ix">00 · 요약</span><h2 id="sumTitle"></h2></div>
+  <div class="grid gauto" id="sumCards"></div>
+  <p class="fine" style="margin-top:10px">브랜드명·제품 카드·표의 제품명 등 <b>어디서든 브랜드를 누르면</b> 페이지 전체가 그 브랜드로 강조됩니다. 다시 누르거나 상단 '전체'를 누르면 돌아갑니다.</p>
 </section>
 
-<!-- 01 -->
 <section id="spec">
-  <div class="sec-head"><span class="ix">01 · 스펙·기능</span><h2>대표 제품 4종 비교</h2>
-    <ul class="dots"><li>각 사 3L급 주력 모델을 대표로 선정했습니다.</li><li>바이툴즈는 단일 모델(2.7L)입니다.</li><li>가격 추이에서는 각 사 2L 베스트셀러도 함께 봅니다.</li><li><b>제품 카드를 누르면</b> 아래 모든 표·차트가 그 브랜드만 강조됩니다.</li></ul></div>
-
-  <div class="grid g4">
-    <article class="card prod b-minix pick" data-b="minix" role="button" tabindex="0" aria-pressed="false"><span class="bchip b-minix">미닉스</span><h3>더 플렌더 MAX</h3><span class="model">MNFD-200G · 2025.11 출시</span>
-      <p class="tag">"음식물 처리의 한계를 초월하다"<br>한 뼘(19.5cm)에 3L</p>
-      <dl><dt>정가</dt><dd>759,000원</dd><dt>다나와 현재</dt><dd>418,990원</dd><dt>A/S</dt><dd>2년 무상·직접 수거</dd></dl></article>
-    <article class="card prod b-cuckoo pick" data-b="cuckoo" role="button" tabindex="0" aria-pressed="false"><span class="bchip b-cuckoo">쿠쿠</span><h3>에코웨일 큐브 메가</h3><span class="model">CFD-FNL301DCGW · 2026.09 등록</span>
-      <p class="tag">"3L로 돌아온<br>눌어붙지 않는 음식물처리기"</p>
-      <dl><dt>정가</dt><dd>769,000원</dd><dt>다나와 현재</dt><dd>450,000원</dd><dt>A/S</dt><dd>120여 개 A/S센터</dd></dl></article>
-    <article class="card prod b-cuchen pick" data-b="cuchen" role="button" tabindex="0" aria-pressed="false"><span class="bchip b-cuchen">쿠첸</span><h3>제로핏 3L</h3><span class="model">CFP-EN301DBIW · 2026.07 출시</span>
-      <p class="tag">"처리는 제대로, 흔적은 제로"<br>와이드형 건조통</p>
-      <dl><dt>정가</dt><dd>749,000원</dd><dt>다나와 현재</dt><dd>429,000원</dd><dt>A/S</dt><dd>전국 81개 서비스망</dd></dl></article>
-    <article class="card prod b-bitools pick" data-b="bitools" role="button" tabindex="0" aria-pressed="false"><span class="bchip b-bitools">바이툴즈 (JMW)</span><h3>바이툴즈 음식물처리기 2.7L</h3><span class="model">FA01A · 2026.08 출시</span>
-      <p class="tag">"쉽게 쓰는 음식물처리기"<br>국내 동급 최소 18cm</p>
-      <dl><dt>정가</dt><dd>699,000원</dd><dt>다나와 현재</dt><dd>405,220원~</dd><dt>A/S</dt><dd>JMW 공식 A/S센터</dd></dl></article>
-  </div>
-  <div class="gbar" id="gbar"><span id="gbarTxt"></span><button id="gbarReset">전체 보기</button></div>
-
-  <h3 class="sub-h">핵심 스펙 시각 비교 <small>막대가 길수록 값이 큼</small></h3>
-  <div class="card"><div class="specbars grid g2" id="specbars"></div>
-    <div class="foot">소음 출처: 미닉스 22.2dB·쿠첸 22.1dB·바이툴즈 18.0dB은 각 사 PDP, 쿠쿠 23.4dB은 다나와 등록값. 미닉스는 다나와에 18dB로 등록되어 있어 표기가 다릅니다.</div></div>
-
-  <h3 class="sub-h">상세 스펙표 <small>★ 4종 중 가장 유리한 값</small></h3>
-  <p class="foc-hint">제품명을 누르면 그 제품 열만 강조됩니다. 왼쪽 항목에 커서를 올리면 그 행이 강조되어 4사를 가로로 비교할 수 있습니다.</p>
-  <div class="tbl-wrap">
-    <table class="ctr foc rowfoc" id="specT">
-      <thead><tr><th style="width:90px">구분</th><th style="text-align:left">항목</th><th data-c="2"><button class="colbtn" aria-pressed="false" data-c="2"><span class="bchip b-minix">미닉스 MAX</span></button></th><th data-c="3"><button class="colbtn" aria-pressed="false" data-c="3"><span class="bchip b-cuckoo">쿠쿠 큐브 메가</span></button></th><th data-c="4"><button class="colbtn" aria-pressed="false" data-c="4"><span class="bchip b-cuchen">쿠첸 제로핏</span></button></th><th data-c="5"><button class="colbtn" aria-pressed="false" data-c="5"><span class="bchip b-bitools">바이툴즈</span></button></th></tr></thead>
-      <tbody id="specTbl"></tbody>
-    </table>
-  </div>
-  <div class="foot">크기·무게·소비전력·필터 주기는 다나와 등록 사양, 나머지는 각 사 PDP·공식몰 기준입니다. 전기료는 측정 조건이 달라 브랜드 간 직접 비교할 수 없습니다.</div>
-
+  <div class="sec-head"><span class="ix">01 · 스펙·기능</span><h2>대표 제품 비교</h2></div>
+  <div class="grid gauto" id="prodCards"></div>
+  <h3 class="sub-h">상세 스펙표 <small>★ 가장 유리한 값 · 항목에 커서를 올리면 가로로 비교</small></h3>
+  <div class="tbl-wrap"><table class="rowfoc" id="specT"></table></div>
+  <p class="foot">크기는 가로×높이×깊이(mm). 크기·무게·소비전력·필터 주기·소음은 다나와 사양, 나머지는 공식 상세페이지 기준. 전기료는 측정 조건이 달라 직접 비교할 수 없습니다.</p>
   <h3 class="sub-h">편의 기능 체크</h3>
-  <p class="foc-hint">제품명을 누르면 그 제품 열만 강조됩니다. 항목에 커서를 올리면 가로로 비교됩니다.</p>
-  <div class="tbl-wrap">
-    <table class="ctr foc rowfoc" id="featT">
-      <thead><tr><th style="width:90px">구분</th><th style="text-align:left">기능</th><th data-c="2"><button class="colbtn" aria-pressed="false" data-c="2"><span class="bchip b-minix">미닉스 MAX</span></button></th><th data-c="3"><button class="colbtn" aria-pressed="false" data-c="3"><span class="bchip b-cuckoo">쿠쿠 큐브 메가</span></button></th><th data-c="4"><button class="colbtn" aria-pressed="false" data-c="4"><span class="bchip b-cuchen">쿠첸 제로핏</span></button></th><th data-c="5"><button class="colbtn" aria-pressed="false" data-c="5"><span class="bchip b-bitools">바이툴즈</span></button></th></tr></thead>
-      <tbody id="featTbl"></tbody>
-    </table>
-  </div>
-  <div class="foot">✓ 다나와 사양 또는 공식 PDP에서 확인 · – 공개 자료에서 확인되지 않음(기능이 없다는 뜻은 아님)</div>
+  <div class="tbl-wrap"><table class="rowfoc" id="featT"></table></div>
+  <p class="foot">✓ 다나와 사양 또는 공식 상세페이지에서 확인 · – 공개 자료에서 확인되지 않음(기능이 없다는 뜻은 아님)</p>
 </section>
 
-<!-- 02 -->
 <section id="price">
-  <div class="sec-head"><span class="ix">02 · 가격 추이</span><h2>다나와 최저가 추이 (2026.1~11)</h2>
-    <ul class="dots"><li>다나와 상품 페이지 '최저가 추이' 차트의 월별 값입니다.</li><li>늦게 출시된 모델은 등록월부터 표시했습니다.</li><li>바이툴즈는 다나와 가격비교 카탈로그가 없어 개별 판매처 가격만 확인됩니다.</li><li><b>브랜드 버튼이나 카드</b>를 누르면 아래 차트 3개와 표가 그 브랜드만 강조됩니다.</li></ul></div>
-
-  <div class="seg" id="priceBrand" role="group" aria-label="가격 브랜드 필터"><span class="lab">브랜드</span></div>
-  <div class="grid g4" style="margin-bottom:14px" id="statGrid">
-    <button class="card stat pick" data-b="minix" aria-pressed="false"><span class="lab">미닉스 MAX · 1월→11월</span><span class="big">+3.3%</span><span class="sub">409,960 → 423,590원<br>저점 7~8월 365,000원</span></button>
-    <button class="card stat pick" data-b="cuckoo" aria-pressed="false"><span class="lab">쿠쿠 에코웨일 2L · 1월→11월</span><span class="big">+1.2%</span><span class="sub">348,790 → 353,050원<br>10월 240,290원 (1월 대비 -31.1%)</span></button>
-    <button class="card stat pick" data-b="cuckoo" aria-pressed="false"><span class="lab">쿠쿠 큐브 2L · 4월→11월</span><span class="big delta-dn">-18.2%</span><span class="sub">448,890 → 366,970원<br>10월 269,990원</span></button>
-    <button class="card stat pick" data-b="cuchen" aria-pressed="false"><span class="lab">쿠첸 제로핏 · 7월→11월</span><span class="big delta-dn">-8.5%</span><span class="sub">436,060 → 399,000원<br>9월부터 399,000원 유지</span></button>
-  </div>
-
-  <div class="card" id="cardA">
-    <h3>베스트셀러 4종 월별 최저가</h3>
+  <div class="sec-head"><span class="ix">02 · 가격</span><h2>다나와 최저가 추이 (2026.1~11)</h2>
+    <ul class="dots"><li>다나와 '최저가 추이' 차트 값입니다. 월별 값은 <b>그 달의 최저가</b>입니다(쿠첸 주간값과 대조해 확인).</li><li>출시가 늦은 모델은 다나와 등록월부터 표시합니다.</li></ul></div>
+  <div class="grid gauto" id="statCards"></div>
+  <div class="card" style="margin-top:12px">
+    <h3>월별 최저가 추이</h3>
     <div class="legend" id="legA"></div>
     <div class="chart" id="chartA"><div class="tip"></div></div>
-    <details class="tv"><summary>표로 보기</summary><div class="tbl-wrap" style="margin-top:8px"><table class="ctr" id="tblA"></table></div></details>
   </div>
-
-  <div class="grid g2" style="margin-top:14px">
+  <h3 class="sub-h">월별 변동표 <small>단위: 만원 · ▲▼ 전월 대비</small></h3>
+  <div class="tbl-wrap"><table class="rowfoc mtbl" id="momT"></table></div>
+  <p class="foot" id="momNote"></p>
+  <div class="grid g2" style="margin-top:12px">
+    <div class="card" id="weeklyCard">
+      <h3>쿠첸 제로핏 주간 가격</h3>
+      <p class="fine">다나와 3개월 차트(주 단위) · 2026-11-18 조회</p>
+      <div class="chart" id="chartW"><div class="tip"></div></div>
+      <ul class="dots" style="margin-top:8px"><li>9~10월에는 주 단위로 39.9만~44.9만원을 오갔습니다.</li><li>월별 차트는 그 달 최저가만 보여줘 '39.9만원 고정'처럼 보입니다.</li><li>10월 27일 이후 39.9만원이 이어지고 있습니다.</li></ul>
+    </div>
     <div class="card">
-      <h3>2026 하반기 3L 신제품</h3>
-      <div class="legend" id="legB"></div>
-      <div class="chart" id="chartB"><div class="tip"></div></div>
-      <div class="foot">큐브 메가는 다나와가 주간 데이터만 제공해 해당 월 주간값 중 최저값을 사용했습니다.</div>
-      <details class="tv"><summary>표로 보기</summary><div class="tbl-wrap" style="margin-top:8px"><table class="ctr" id="tblB"></table></div></details>
-    </div>
-    <div class="card" id="cardC">
       <h3>정가 대비 현재 실판매가</h3>
-      <p class="fine" style="margin-bottom:6px">○ 정가 · ● 다나와 현재 최저가(2026-11-18) · 선 위 숫자는 할인율</p>
+      <p class="fine" style="margin-bottom:6px">○ 정가 · ● 다나와 현재 최저가 · 선 위 숫자는 할인율</p>
       <div class="chart" id="chartC"></div>
-      <div class="foot">바이툴즈는 다나와 카탈로그가 없어 개별 판매처 최저가(405,220원)를 사용했습니다. 다나와 등록 판매처 가격대는 405,220~449,000원입니다.</div>
-    </div>
-  </div>
-
-  <div class="card" style="margin-top:14px">
-    <h3 style="margin-bottom:4px">가격 흐름 해석</h3>
-    <p class="foc-hint" style="margin:0 0 12px">항목을 누르면 위 차트가 해당 브랜드만 보이도록 바뀝니다.</p>
-    <div class="grid g2">
-      <div class="notes">
-        <div class="item pickn" data-b="minix" data-l="A" role="button" tabindex="0" aria-pressed="false"><span class="n">A</span><div><span class="go">위 차트에서 미닉스만 보기 ↑</span><h4>미닉스: 연중 방어, 여름만 인하</h4><ul class="dots"><li>MAX는 40~44만원대 유지</li><li>7~8월에만 36.5만원으로 인하, 9월 41만원대 복귀</li><li>PRO도 같은 시기 30.3만원으로 저점</li></ul></div></div>
-        <div class="item pickn" data-b="cuckoo" data-l="B" role="button" tabindex="0" aria-pressed="false"><span class="n">B</span><div><span class="go">위 차트에서 쿠쿠만 보기 ↑</span><h4>쿠쿠: 10월 단기 특가</h4><ul class="dots"><li>에코웨일 2L 24.0만원, 큐브 2L 27.0만원, 메가 3L 32.4만원</li><li>3개 모델 모두 10월이 최저점</li><li>11월에 35~41만원대로 복귀</li></ul></div></div>
-      </div>
-      <div class="notes">
-        <div class="item pickn" data-b="cuchen" data-l="C" role="button" tabindex="0" aria-pressed="false"><span class="n">C</span><div><span class="go">위 차트에서 쿠첸만 보기 ↑</span><h4>쿠첸: 39.9만원 고정</h4><ul class="dots"><li>제로핏은 9월~11월 중순 399,000원</li><li>현재 다나와 429,000원</li></ul></div></div>
-        <div class="item pickn" data-b="all" data-l="D" role="button" tabindex="0" aria-pressed="false"><span class="n">D</span><div><span class="go">정가 대비 실판매가 차트 보기 ↑</span><h4>4사 공통: 정가 앵커 + 40%대 할인</h4><ul class="dots"><li>정가 69.9~76.9만원</li><li>할인율 41.5~44.8%</li><li>실구매 경쟁 구간은 40~45만원</li></ul></div></div>
-      </div>
+      <p class="foot" id="dumbNote"></p>
     </div>
   </div>
 </section>
 
-<!-- 03 -->
 <section id="usp">
-  <div class="sec-head"><span class="ix">03 · USP·차별점</span><h2>공식 PDP가 말하는 USP와 우선순위</h2>
-    <ul class="dots"><li>순위는 각 사 PDP가 직접 번호를 매긴 요약(또는 기능 소개 순서)을 그대로 옮겼습니다.</li></ul></div>
-
-  <p class="foc-hint">브랜드 카드에 커서를 올리면 그 브랜드만 선명하게 보입니다.</p>
-  <div class="grid g4 uspgrid">
-    <div class="card b-minix uspcard" tabindex="0" style="display:grid;gap:12px;align-content:start">
-      <span class="bchip b-minix">미닉스 MAX</span><p class="fine">PDP '4대 핵심 기능' 이후 번호 순서</p>
-      <ol class="rank">
-        <li><div><b>강력한 분쇄력</b><span>4중 블레이드, 간격 1.0mm</span></div></li>
-        <li><div><b>130℃ 초고속 처리</b><span>500g 약 2시간</span></div></li>
-        <li><div><b>3L 대용량</b><span>한 뼘 크기 유지</span></div></li>
-        <li><div><b>2세대 완전자동</b><span>무게·온도·습도 센싱</span></div></li>
-        <li><div><b>탈취</b><span>하드락 필터, 유해가스 4종 99.5%</span></div></li>
-        <li><div><b>저소음</b><span>22.2dB, 사일런트 모드</span></div></li>
-      </ol>
-      <div class="diff"><b>차별점</b><ul class="dots"><li>무게를 재서 스스로 작동</li><li>남은 시간 8단계 표시</li><li>판매·리뷰 실적 숫자</li></ul></div>
-    </div>
-    <div class="card b-cuckoo uspcard" tabindex="0" style="display:grid;gap:12px;align-content:start">
-      <span class="bchip b-cuckoo">쿠쿠 큐브 메가</span><p class="fine">PDP 'TOP 5' 요약 순서</p>
-      <ol class="rank">
-        <li><div><b>3L 대용량</b><span>한 뼘 크기 그대로</span></div></li>
-        <li><div><b>3세대 건조통</b><span>3중 돌기 브라켓 + 5중 블레이드</span></div></li>
-        <li><div><b>눌음 방지 모드</b><span>세척까지 가볍게</span></div></li>
-        <li><div><b>5중 듀얼케어 탈취 필터</b><span>활성탄+제올라이트 1,100g</span></div></li>
-        <li><div><b>50분 초고속 처리</b><span>100g 기준</span></div></li>
-      </ol>
-      <div class="diff"><b>차별점</b><ul class="dots"><li>'눌어붙지 않는' 건조통</li><li>가장 짧은 처리 시간 표기</li><li>KCSI 1위·국내 생산</li></ul></div>
-    </div>
-    <div class="card b-cuchen uspcard" tabindex="0" style="display:grid;gap:12px;align-content:start">
-      <span class="bchip b-cuchen">쿠첸 제로핏</span><p class="fine">PDP '7가지 포인트' 순서</p>
-      <ol class="rank">
-        <li><div><b>3L 와이드 건조통</b><span>원통형 대비 1L 확대</span></div></li>
-        <li><div><b>냄새 잡는 3가지 기술</b><span>활성탄·밀폐가드·필터 잔량 표시</span></div></li>
-        <li><div><b>STS304 브라켓·4중 블레이드</b><span>닭뼈·생선뼈까지</span></div></li>
-        <li><div><b>165℃ 열 제어 건조</b><span>유해세균 99.999% 감소</span></div></li>
-        <li><div><b>오토모드</b><span>강력/표준 자동, 식힘까지</span></div></li>
-        <li><div><b>보관 모드</b><span>최대 이틀</span></div></li>
-        <li><div><b>중간 투입</b><span>작동 중 추가</span></div></li>
-      </ol>
-      <div class="diff"><b>차별점</b><ul class="dots"><li>건조통 모양으로 실용량 확대</li><li>필터 잔량 표시</li><li>'오브제' 디자인, 김연아 모델 광고</li></ul></div>
-    </div>
-    <div class="card b-bitools uspcard" tabindex="0" style="display:grid;gap:12px;align-content:start">
-      <span class="bchip b-bitools">바이툴즈</span><p class="fine">PDP 기술 소개 순서</p>
-      <ol class="rank">
-        <li><div><b>공간·용량</b><span>동급 최소 18cm, 2.7L</span></div></li>
-        <li><div><b>150℃ 풀커버 히팅</b><span>40초 만에 건조 활성화</span></div></li>
-        <li><div><b>V-Cut Blade</b><span>4Blade, 2mm</span></div></li>
-        <li><div><b>BY Intelligence</b><span>상태 감지 자동 조절</span></div></li>
-        <li><div><b>최소 1시간 9분</b><span>최소 처리 시간</span></div></li>
-        <li><div><b>트리플 탈취 케어</b><span>360° 하이브리드 필터</span></div></li>
-        <li><div><b>저소음 18.0dB</b><span>알림음 BYTULZ Melody</span></div></li>
-      </ol>
-      <div class="diff"><b>차별점</b><ul class="dots"><li>가장 좁은 폭, 가장 낮은 소비전력(500W)</li><li>헤어드라이어 BLDC 모터·히터 기술 이전</li></ul></div>
-    </div>
-  </div>
-
+  <div class="sec-head"><span class="ix">03 · USP</span><h2>공식 상세페이지의 USP와 우선순위</h2>
+    <ul class="dots"><li>순위는 각 사 상세페이지가 직접 번호를 매긴 요약(또는 소개 순서) 그대로입니다.</li><li>카드에 커서를 올리면 그 제품만 선명해집니다.</li></ul></div>
+  <div class="grid gauto uspgrid" id="uspCards"></div>
   <h3 class="sub-h">USP 강조도 매트릭스</h3>
-  <p class="foc-hint">브랜드명을 누르면 그 브랜드 열만 강조됩니다.</p>
   <div class="legend-rate">
-    <span><span class="rate r3"><i class="on"></i><i class="on"></i><i class="on"></i></span> 핵심 (요약 상위·히어로)</span>
+    <span><span class="rate r3"><i class="on"></i><i class="on"></i><i class="on"></i></span> 핵심</span>
     <span><span class="rate"><i class="on"></i><i class="on"></i><i></i></span> 독립 섹션</span>
     <span><span class="rate"><i class="on"></i><i></i><i></i></span> 언급</span>
-    <span><span class="dash">–</span> 없음</span>
+    <span class="dash">– 없음</span>
   </div>
-  <div class="tbl-wrap">
-    <table class="ctr foc" id="heatT">
-      <thead><tr><th style="width:110px">카테고리</th><th style="text-align:left">소구 포인트</th><th data-c="2"><button class="colbtn" aria-pressed="false" data-c="2"><span class="bchip b-minix">미닉스</span></button></th><th data-c="3"><button class="colbtn" aria-pressed="false" data-c="3"><span class="bchip b-cuckoo">쿠쿠</span></button></th><th data-c="4"><button class="colbtn" aria-pressed="false" data-c="4"><span class="bchip b-cuchen">쿠첸</span></button></th><th data-c="5"><button class="colbtn" aria-pressed="false" data-c="5"><span class="bchip b-bitools">바이툴즈</span></button></th><th>경쟁 강도</th></tr></thead>
-      <tbody id="heatTbl"></tbody>
-    </table>
-  </div>
-  <div class="foot">경쟁 강도: 독립 섹션 이상으로 다루는 브랜드 수 기준 · 3~4곳 '포화' / 2곳 '경쟁' / 1곳 '단독'</div>
+  <div class="tbl-wrap"><table class="rowfoc" id="heatT"></table></div>
+  <p class="foot">경쟁 강도: 독립 섹션 이상으로 다루는 제품 수 · 3개 이상 '포화' / 2개 '경쟁' / 1개 '단독'</p>
 </section>
 
-<!-- 04 -->
 <section id="pdp">
   <div class="sec-head"><span class="ix">04 · PDP 로직</span><h2>상세페이지는 어떤 순서로 설득하는가</h2>
-    <ul class="dots"><li>각 사 PDP 섹션을 위에서 아래 순서로 나열했습니다. 섹션은 PDP 이미지를 판독해 주제 단위로 묶은 것입니다.</li><li>브랜드명 아래 숫자는 역할별 섹션 개수입니다.</li><li><b>제품명</b>을 누르면 해당 제품만 보입니다.</li><li><b>역할 필터</b>를 누르면 브랜드별로 그 역할의 섹션만 강조됩니다.</li></ul></div>
-
+    <ul class="dots"><li>섹션은 상세페이지 이미지를 판독해 주제 단위로 묶은 것입니다.</li><li>제품명 아래 숫자는 역할별 섹션 개수입니다. 역할을 누르면 그 섹션만 강조됩니다.</li></ul></div>
   <div class="card">
-    <div class="seg" id="flowBrand" role="group" aria-label="제품 필터"><span class="lab">제품</span></div>
-    <div class="seg" id="flowKind" role="group" aria-label="역할 필터"><span class="lab">역할</span></div>
-    <div class="flow" id="flow"></div>
-    <p class="fine" id="flowCount" style="margin-top:12px"></p>
+    <div class="seg" id="roleSeg"></div>
+    <div id="flow"></div>
   </div>
-
   <h3 class="sub-h">PDP 설계 로직 비교</h3>
-  <p class="foc-hint">브랜드명을 누르면 그 브랜드 열만 강조됩니다.</p>
-  <div class="tbl-wrap">
-    <table class="foc rowfoc" id="logicT">
-      <thead><tr><th style="width:96px">구분</th><th data-c="2"><button class="colbtn" aria-pressed="false" data-c="2"><span class="bchip b-minix">미닉스</span></button></th><th data-c="3"><button class="colbtn" aria-pressed="false" data-c="3"><span class="bchip b-cuckoo">쿠쿠</span></button></th><th data-c="4"><button class="colbtn" aria-pressed="false" data-c="4"><span class="bchip b-cuchen">쿠첸</span></button></th><th data-c="5"><button class="colbtn" aria-pressed="false" data-c="5"><span class="bchip b-bitools">바이툴즈</span></button></th></tr></thead>
-      <tbody>
-        <tr><th class="row">설득 공식</th><td><b>리더 증명 → 업그레이드</b></td><td><b>권위 → 스펙 우위</b></td><td><b>문제 → 해결 매핑</b></td><td><b>출신 → 재정의</b></td></tr>
-        <tr><th class="row">전개</th><td>1위 실적 제시<br>"유일한 아쉬움은 용량"<br>→ 신제품 이유</td><td>KCSI·판매 1위<br>→ TOP5 요약<br>→ 일반 제품 비교표</td><td>구매 고민 질문 6개<br>→ 7개 포인트로<br>하나씩 답변</td><td>모기업 기술력<br>→ '작게 vs 크게' 딜레마<br>→ 기준 재정의</td></tr>
-        <tr><th class="row">첫 화면</th><td>정부 보조금 최대 80%<br>판매량 압도적 1위</td><td>2026 KCSI 1위<br>리뷰 30,000+</td><td>지자체 지원 최대 70%<br>"흔적은 제로"</td><td>사전 체험단 후기<br>"열과 공기를 아는 회사"</td></tr>
-        <tr><th class="row">증명 방식</th><td>판매·리뷰 숫자<br>특허·품질 테스트<br>열화상·실측 사진</td><td>시험성적서<br>비교표<br>처리 전후 사진</td><td>시험성적서<br>단면도<br>dB 비교 눈금</td><td>타사 온도 그래프<br>처리 전후 95%<br>품질 테스트 135개</td></tr>
-        <tr><th class="row">강점</th><td>사회적 증거 압도적<br>상위 모델 유도 동선</td><td>요약→비교→상세가<br>빠르게 읽힘</td><td>고민 순서 = 정보 순서</td><td>신생 브랜드 약점을<br>모기업 신뢰로 보완</td></tr>
-        <tr><th class="row">약점</th><td>매우 김<br>채널별 수치 불일치</td><td>소구가 많아<br>1순위 메시지가 흐림</td><td>처리 시간 수치 없음<br>사회적 증거 약함</td><td>판매 실적 부족<br>'최소' 조건 표기 필요</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="tbl-wrap"><table class="rowfoc" id="logicT"></table></div>
 </section>
 
-<!-- 05 -->
 <section id="fact">
-  <div class="sec-head"><span class="ix">05 · 주장 검증</span><h2>주요 주장 검증</h2>
-    <ul class="dots"><li>제조사 주장을 다나와 사양, 언론 보도, 공식 채널 표기와 대조했습니다.</li><li>각 행의 링크로 근거를 바로 확인할 수 있습니다.</li><li>처음에는 미닉스 항목이 보이며, 브랜드 버튼으로 바꿀 수 있습니다.</li></ul></div>
-  <div class="seg" id="factBrand" role="group" aria-label="브랜드 필터"><span class="lab">브랜드</span></div>
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th style="width:100px">브랜드</th><th>주장 / 데이터</th><th>대조 결과</th><th style="width:96px;text-align:center">판정</th><th style="width:130px">근거</th></tr></thead>
-      <tbody id="factTbl"></tbody>
-    </table>
-  </div>
+  <div class="sec-head"><span class="ix">05 · 검증</span><h2>주요 주장 검증</h2>
+    <ul class="dots"><li>제조사 주장을 다나와 사양, 언론 보도, 공식 채널 표기와 대조했습니다.</li><li>선택한 용량 탭의 브랜드와 공통 항목만 보입니다.</li></ul></div>
+  <div class="tbl-wrap"><table id="factT"></table></div>
   <p class="fine" id="factCount" style="margin-top:8px"></p>
 </section>
 
-<!-- 06 -->
 <section id="proposal">
-  <div class="sec-head"><span class="ix">06 · 신제품 제안</span><h2>신규 음식물처리기 PDP 구성안</h2>
-    <ul class="dots"><li><b>1안 (전체안)</b> 정보형 12블록. 유지비·한식 실측을 1순위로.</li><li><b>2안 (심플안)</b> 고급 디자인이 특징인 제품용 7블록. 구매 고려 요소만 남기고 3D 콘텐츠로 압축.</li><li>USP는 가설이며 출시 전 소비자 조사로 검증이 필요합니다.</li></ul></div>
-
-  <div class="grid g2" style="margin-bottom:18px">
+  <div class="sec-head"><span class="ix">06 · 제안</span><h2>신규 음식물처리기 PDP 구성안</h2>
+    <ul class="dots"><li><b>2안(심플안)</b>: 고급 디자인 제품용 7블록. 기본으로 보입니다.</li><li><b>1안(전체안)</b>: 정보형 12블록.</li><li>USP는 가설이며 출시 전 소비자 조사로 검증이 필요합니다.</li></ul></div>
+  <div class="grid g2" style="margin-bottom:16px">
     <div class="card">
-      <h3 style="margin-bottom:12px">경쟁 공백 지도</h3>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>구매 불안</th><th>경쟁사 현재 대응</th><th style="text-align:center">공백</th></tr></thead>
-          <tbody>
-            <tr><td><b>유지비</b><br><small>필터·전기</small></td><td>4사가 서로 다른 조건으로 표기</td><td style="text-align:center"><span class="chip st-bad">큼</span></td></tr>
-            <tr><td><b>국물 많은 한식</b></td><td>"어떤 음식이든" 수준의 소구<br>수분이 많으면 처리가 늦어진다는 사용기 존재</td><td style="text-align:center"><span class="chip st-bad">큼</span></td></tr>
-            <tr><td><b>디자인 증명</b></td><td>사진·렌더 컷만 사용<br>인터랙티브 3D·AR 없음</td><td style="text-align:center"><span class="chip st-bad">큼</span></td></tr>
-            <tr><td><b>냄새·소음 실측</b></td><td>시험성적서는 있으나 조건·채널별 수치 상이</td><td style="text-align:center"><span class="chip st-warn">중간</span></td></tr>
-            <tr><td>용량·크기·고온·자동</td><td>4사 모두 핵심 소구</td><td style="text-align:center"><span class="chip st-na">포화</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="foot">디자인은 쿠첸이 '오브제'로 이미 강하게 소구 중이므로, 사진이 아닌 체험형(3D·AR)으로 증명해야 차별화됩니다.</div>
+      <h3 style="margin-bottom:10px">경쟁 공백 (8개 제품 기준)</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th class="lh">구매 불안</th><th class="lh">경쟁사 현재 대응</th><th>공백</th></tr></thead>
+        <tbody>
+          <tr><td class="lt"><b>디자인 증명</b></td><td class="lt">모두 정적 이미지·렌더 컷<br>인터랙티브 3D·AR 없음</td><td><span class="chip st-bad">큼</span></td></tr>
+          <tr><td class="lt"><b>유지비</b></td><td class="lt">필터·전기료 표기 기준이 제각각</td><td><span class="chip st-bad">큼</span></td></tr>
+          <tr><td class="lt"><b>국물 많은 한식</b></td><td class="lt">코웨이만 '된장찌개·김치찜 처리' 명시<br>처리 시간·결과 실측 공개는 없음</td><td><span class="chip st-warn">중간</span></td></tr>
+          <tr><td class="lt"><b>냄새·소음</b></td><td class="lt">시험성적서는 있으나 조건·채널별 수치 상이</td><td><span class="chip st-warn">중간</span></td></tr>
+          <tr><td class="lt">용량·크기·고온·자동</td><td class="lt">대부분 핵심으로 소구</td><td><span class="chip st-na">포화</span></td></tr>
+        </tbody></table></div>
+      <p class="foot">디자인은 쿠첸이 '오브제'로 이미 강하게 소구 중입니다. 사진이 아닌 체험(3D·AR)으로 보여줘야 차별화됩니다.</p>
     </div>
     <div class="card">
-      <h3 style="margin-bottom:12px">구매 시 고려 요소 (근거)</h3>
+      <h3 style="margin-bottom:10px">구매 시 고려 요소 (근거)</h3>
       <ul class="dots">
-        <li><b>냄새</b> 여름철 냄새를 얼마나 줄이는지 <a href="https://www.segye.com/newsView/20260503501832">세계일보</a></li>
-        <li><b>공간</b> 좁은 주방에 들어가는지 <a href="https://www.segye.com/newsView/20260503501832">세계일보</a></li>
-        <li><b>관리</b> 필터 교체·내부 세척 부담 <a href="https://www.segye.com/newsView/20260503501832">세계일보</a></li>
-        <li><b>비용</b> 구매 비용 부담 <a href="https://www.ajd.co.kr/contents/basic-tip/guide/%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0">아정당 가이드</a></li>
-        <li><b>소음·자리</b> 소음과 자리 차지 <a href="https://www.ajd.co.kr/contents/basic-tip/guide/%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0">아정당 가이드</a></li>
-        <li><b>처리 품목</b> 처리 가능한 종류가 제한적 <a href="https://www.ajd.co.kr/contents/basic-tip/guide/%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0">아정당 가이드</a></li>
-        <li><b>수분</b> 국물 등 수분 많은 음식물은 작동 시간 지연 <a href="https://biz.newdaily.co.kr/site/data/html/2026/02/25/2026022500160.amp.html">뉴데일리 사용기</a></li>
-        <li><b>유지비</b> 한국소비자원 평가 항목에 연간 유지비 포함 <a href="https://www.asiae.co.kr/en/article/2026032314002073036">아시아경제</a></li>
+        <li><b>냄새</b> 여름철 냄새 · <a href="https://www.segye.com/newsView/20260503501832">세계일보</a></li>
+        <li><b>공간</b> 좁은 주방에 들어가는지 · <a href="https://www.segye.com/newsView/20260503501832">세계일보</a></li>
+        <li><b>관리</b> 필터 교체·내부 세척 부담 · <a href="https://www.segye.com/newsView/20260503501832">세계일보</a></li>
+        <li><b>비용</b> 구매 비용 부담 · <a href="https://www.ajd.co.kr/contents/basic-tip/guide/%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0">아정당 가이드</a></li>
+        <li><b>소음·자리</b> 소음과 자리 차지 · <a href="https://www.ajd.co.kr/contents/basic-tip/guide/%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0">아정당 가이드</a></li>
+        <li><b>수분</b> 국물 등 수분 많은 음식물은 작동 시간 지연 · <a href="https://biz.newdaily.co.kr/site/data/html/2026/02/25/2026022500160.amp.html">뉴데일리 사용기</a></li>
+        <li><b>유지비</b> 한국소비자원 평가 항목에 연간 유지비 포함 · <a href="https://www.asiae.co.kr/en/article/2026032314002073036">아시아경제</a></li>
       </ul>
     </div>
   </div>
-
   <div class="tabs" role="tablist" aria-label="PDP 구성안">
-    <button role="tab" id="tab1" aria-selected="false" aria-controls="pan1">1안 · 전체안<small>정보형 12블록</small></button>
-    <button role="tab" id="tab2" aria-selected="true" aria-controls="pan2">2안 · 심플안<small>디자인 프리미엄 7블록</small></button>
+    <button role="tab" data-plan="2" aria-selected="true">2안 · 심플안<small>디자인 프리미엄 7블록</small></button>
+    <button role="tab" data-plan="1" aria-selected="false">1안 · 전체안<small>정보형 12블록</small></button>
   </div>
-
-  <!-- PANEL 1 -->
-  <div class="panel" id="pan1" role="tabpanel" aria-labelledby="tab1" hidden>
-    <div class="grid g2" style="margin-bottom:18px">
-      <div class="card"><h3 style="margin-bottom:12px">USP 우선순위</h3>
-        <div class="pyr">
-          <div class="p1"><b>1순위 · 연간 유지비 공개</b>장수명 필터 + 동일 조건 전기료</div>
-          <div class="p2"><b>2순위 · 한식 실측 처리</b>국물·뼈·껍질 처리 시간 공개</div>
-          <div class="p2"><b>3순위 · 조건을 밝힌 냄새·소음</b>공인 시험, 측정 조건 표기</div>
-          <div class="p3"><b>기본 충족 (표 1장)</b>3L · 한 뼘 · 고온 · 자동 · 중간 투입 · 보관</div>
-        </div></div>
-      <div class="card"><h3 style="margin-bottom:12px">핵심 메시지</h3>
-        <div class="callout"><b>"사는 날보다 쓰는 3년이 더 편한 음식물처리기"</b><span>비교 가능한 숫자 하나로 신뢰를 만드는 정보형 PDP</span></div>
-        <ul class="dots" style="margin-top:12px"><li>적합: 기능·가성비 중심 제품</li><li>길이: 12블록 (경쟁사 대비 짧음)</li><li>위험: 정보량이 많아 모바일 이탈 가능</li></ul></div>
-    </div>
-    <div class="wf">
-      <div class="phone" aria-label="1안 모바일 와이어프레임" id="phone1"></div>
-      <div class="card notes" id="notes1"></div>
-    </div>
-  </div>
-
-  <!-- PANEL 2 -->
-  <div class="panel" id="pan2" role="tabpanel" aria-labelledby="tab2">
-    <div class="grid g2" style="margin-bottom:18px">
-      <div class="card"><h3 style="margin-bottom:12px">USP 우선순위</h3>
-        <div class="pyr">
-          <div class="p1"><b>1순위 · 디자인 (체험으로 증명)</b>3D 360°·AR 배치·소재 클로즈업</div>
-          <div class="p2"><b>2순위 · 구매 불안 3가지 해소</b>냄새 · 소음 · 공간</div>
-          <div class="p2"><b>3순위 · 관리·유지비 한 줄</b>필터 주기·연간 비용·세척</div>
-          <div class="p3"><b>기본 충족 (요약 1블록)</b>3L · 고온 · 자동 · 중간 투입 · 보관 · 보조금</div>
-        </div></div>
-      <div class="card"><h3 style="margin-bottom:12px">핵심 메시지</h3>
-        <div class="callout"><b>"주방에 꺼내 두고 싶은 음식물처리기"</b><span>보여주는 디자인, 증명하는 성능</span></div>
-        <ul class="dots" style="margin-top:12px"><li>적합: 디자인·소재가 차별점인 프리미엄 제품</li><li>길이: 7블록 (1안 대비 5블록 축소)</li><li>정보 보존: 스펙·FAQ·처리 불가 품목은 접힘형으로 제공</li></ul></div>
-    </div>
-    <div class="wf">
-      <div class="phone" aria-label="2안 모바일 와이어프레임" id="phone2"></div>
-      <div class="card notes" id="notes2"></div>
-    </div>
-  </div>
-
-  <h3 class="sub-h">넣을 콘텐츠 목록 <small id="contentLabel">2안 기준</small></h3>
-  <div class="tbl-wrap">
-    <table>
-      <thead id="contentHead"></thead>
-      <tbody id="contentTbl"></tbody>
-    </table>
-  </div>
-  <div class="foot">3D 콘텐츠 현황: 확인한 4사 PDP는 모두 정적 이미지·렌더 컷 중심이며, 인터랙티브 3D 뷰어나 AR 배치는 없었습니다(2026-11-18 기준).</div>
+  <div class="grid g2" style="margin-bottom:14px" id="planTop"></div>
+  <div class="plan" id="planRows"></div>
+  <h3 class="sub-h">넣을 콘텐츠와 3D 추천 <small id="contentLabel"></small></h3>
+  <div class="callout" id="d3note" style="margin-bottom:10px"></div>
+  <div class="tbl-wrap"><table class="rowfoc" id="contentT"></table></div>
 </section>
 
-<!-- 07 -->
 <section id="sources">
   <div class="sec-head"><span class="ix">07 · 출처</span><h2>출처와 조사 방법</h2></div>
   <div class="grid g2">
     <div class="card">
-      <h4 style="margin-bottom:10px">다나와 (가격·사양, 2026-11-18 조회)</h4>
+      <h4 style="margin-bottom:8px">다나와 (가격·사양)</h4>
+      <ul class="src" id="srcDanawa"></ul>
+      <h4 style="margin:14px 0 8px">공식 상세페이지</h4>
       <ul class="src">
-        <li><a href="https://prod.danawa.com/info/?pcode=101071457">미닉스 더 플렌더 Max MNFD-200G</a></li>
-        <li><a href="https://prod.danawa.com/info/?pcode=78529196">미닉스 더 플렌더 Pro MNFD-120G</a></li>
-        <li><a href="https://prod.danawa.com/info/?pcode=89612621">쿠쿠 에코웨일 CFD-ENL201DCGW</a></li>
-        <li><a href="https://prod.danawa.com/info/?pcode=122621378">쿠쿠 에코웨일 큐브 CFD-FNL201DCGW</a></li>
-        <li><a href="https://prod.danawa.com/info/?pcode=123800337">쿠쿠 에코웨일 메가 CFD-ENL301DCGW</a></li>
-        <li><a href="https://prod.danawa.com/info/?pcode=124102411">쿠쿠 에코웨일 큐브 메가 CFD-FNL301DCGW</a></li>
-        <li><a href="https://prod.danawa.com/info/?pcode=123032088">쿠첸 제로핏 CFP-EN301DBIW</a></li>
-        <li><a href="https://search.danawa.com/dsearch.php?query=%EB%B0%94%EC%9D%B4%ED%88%B4%EC%A6%88+%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0">바이툴즈 음식물처리기 검색 결과</a></li>
-        <li><a href="https://plan.danawa.com/info/?nPlanSeq=11940">다나와 기획전: 미닉스 Max vs Pro</a></li>
-      </ul>
-      <h4 style="margin:16px 0 10px">공식 채널 상세페이지 (PDP)</h4>
-      <ul class="src">
-        <li><a href="https://www.cuckoo.co.kr/mall/productView?productNo=11263">쿠쿠몰 에코웨일 큐브 메가</a></li>
-        <li><a href="https://www.cuchenmall.co.kr/shop/detail.php?pno=0FD4B8A8354A77A3FA75E3D97E7A34E6">쿠첸몰 제로핏 3L (화이트)</a></li>
-        <li><a href="https://www.kurly.com/goods/1001728375">미닉스 공식 판매자(앳홈) 더플렌더 MAX · 마켓컬리</a></li>
-        <li><a href="https://www.musinsa.com/products/7218160">바이툴즈 공식 판매자(JMW) · 무신사</a></li>
+        <li><a href="https://www.kurly.com/goods/1001728375">미닉스 더플렌더 MAX · 공식 판매자(앳홈) 컬리</a></li>
+        <li><a href="https://www.kurly.com/goods/1002313182">미닉스 더플렌더 mini · 공식 판매자(앳홈) 컬리</a></li>
         <li><a href="https://minix.life/product/list.html?cate_no=62">미닉스 공식몰 소모품(필터 단가)</a></li>
-        <li><a href="https://www.cuchenmall.co.kr/shop/big_section.php?cno1=1189">쿠첸몰 음식물처리기 필터</a></li>
+        <li><a href="https://www.cuckoo.co.kr/mall/productView?productNo=11263">쿠쿠몰 에코웨일 큐브 메가</a></li>
+        <li><a href="https://www.cuckoo.co.kr/mall/productView?productNo=10334">쿠쿠몰 에코웨일 큐브 2L</a></li>
+        <li><a href="https://www.cuchenmall.co.kr/shop/detail.php?pno=0FD4B8A8354A77A3FA75E3D97E7A34E6">쿠첸몰 제로핏 3L</a></li>
+        <li><a href="https://www.coway.com/product/detail?prdno=1492&amp;optno=1">코웨이 제로 분쇄형 3L</a></li>
+        <li><a href="https://www.coway.com/product/detail?prdno=1493&amp;optno=1">코웨이 제로 분쇄형 2L</a></li>
+        <li><a href="https://www.ajd.co.kr/electronics/overview/2105/detail/54501">스마트카라 스톤 상세 · 아정당 게시본</a></li>
+        <li><a href="https://www.musinsa.com/products/7218160">바이툴즈 · 공식 판매자(JMW) 무신사</a></li>
       </ul>
     </div>
     <div class="card">
-      <h4 style="margin-bottom:10px">언론 보도</h4>
+      <h4 style="margin-bottom:8px">언론 보도·기타</h4>
       <ul class="src">
-        <li><a href="https://biz.newdaily.co.kr/site/data/html/2025/11/03/2025110300079.amp.html">뉴데일리 · 미닉스 '더 플렌더 MAX' 출시 (2025.11.3)</a></li>
-        <li><a href="https://biz.newdaily.co.kr/site/data/html/2026/02/25/2026022500160.amp.html">뉴데일리 · 더 플렌더 MAX 사용기·누적 6만 대 (2026.2.25)</a></li>
-        <li><a href="https://www.ibabynews.com/news/articleView.html?idxno=154957">베이비뉴스 · 쿠쿠 2026 KCSI 음식물처리기 1위</a></li>
-        <li><a href="https://view.asiae.co.kr/article/2026071309362815370">아시아경제 · 쿠첸 '제로핏' 출시 (2026.7.13)</a></li>
-        <li><a href="https://www.vegannews.co.kr/news/article.html?no=384647">비건뉴스 · JMW '바이툴즈' 론칭 (2026.8.10)</a></li>
-        <li><a href="https://www.segye.com/newsView/20260905501824">세계일보 · 미닉스 '더 플렌더 mini' 폭 17cm</a></li>
+        <li><a href="https://biz.newdaily.co.kr/site/data/html/2025/11/03/2025110300079.amp.html">뉴데일리 · 미닉스 MAX 출시 (2025.11.3)</a></li>
+        <li><a href="https://biz.newdaily.co.kr/site/data/html/2026/02/25/2026022500160.amp.html">뉴데일리 · MAX 사용기·누적 6만 대</a></li>
+        <li><a href="https://www.29cm.co.kr/content/29live/2026/08/minix">29CM 라이브 · mini 정상가 499,000원</a></li>
+        <li><a href="https://www.segye.com/newsView/20260905501824">세계일보 · 미닉스 mini 폭 17cm</a></li>
+        <li><a href="https://www.ibabynews.com/news/articleView.html?idxno=154957">베이비뉴스 · 쿠쿠 2026 KCSI 1위</a></li>
+        <li><a href="https://view.asiae.co.kr/article/2026071309362815370">아시아경제 · 쿠첸 제로핏 출시 (2026.7.13)</a></li>
+        <li><a href="https://www.inews24.com/view/1972391">아이뉴스24 · 코웨이 제로 분쇄형 2종 출시</a></li>
+        <li><a href="https://m.11st.co.kr/products/9411828455">11번가 코웨이브랜드스토어 · 3L 소비자판매가</a></li>
+        <li><a href="https://rentre.kr/product/1600007583/%EC%A0%9C%EB%A1%9C-%EC%9D%8C%EC%8B%9D%EB%AC%BC-%EC%B2%98%EB%A6%AC%EA%B8%B0-%EB%B6%84%EC%87%84%ED%98%95-2l">렌트리 · 코웨이 2L 렌탈 월 18,900원</a></li>
+        <li><a href="https://www.smarttoday.co.kr/ko-kr/articles/98190">스마트투데이 · 스마트카라 STONE 공개 (2025.12.4)</a></li>
+        <li><a href="https://www.vegannews.co.kr/news/article.html?no=384647">비건뉴스 · JMW 바이툴즈 론칭 (2026.8.10)</a></li>
         <li><a href="https://www.segye.com/newsView/20260503501832">세계일보 · 음식물처리기 구매 기준</a></li>
-        <li><a href="https://biz.newdaily.co.kr/site/data/html/2026/03/19/2026031900133.amp.html">뉴데일리 · 쿠쿠 vs 미닉스 양강 구도·시장 규모</a></li>
-        <li><a href="https://www.heraldk.com/article/2026040918390746870">헤럴드경제 · 지자체 보조금 최대 70% 사례</a></li>
-        <li><a href="https://rentre.kr/product/1600006778/%EB%8D%94%ED%94%8C%EB%A0%8C%EB%8D%94-max-%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC-3l">렌트리 · 더플렌더 MAX 상세(누적 30만 대·특허 5개 표기)</a></li>
+        <li><a href="https://www.heraldk.com/article/2026040918390746870">헤럴드경제 · 지자체 보조금 사례</a></li>
       </ul>
-      <h4 style="margin:16px 0 10px">조사 방법과 한계</h4>
+      <h4 style="margin:14px 0 8px">조사 방법과 한계</h4>
       <ul class="dots">
-        <li>다나와 차트 값은 다나와가 표시한 월별 대표 최저가입니다. 카드 할인·쿠폰은 판매처마다 다릅니다.</li>
-        <li>PDP 문구는 이미지에서 직접 판독했습니다. 기획전·채널에 따라 구성이 다를 수 있습니다.</li>
-        <li>미닉스 공식몰 상세는 접속이 막혀 공식 판매자(앳홈)의 마켓컬리 상세로 대체했습니다.</li>
-        <li>바이툴즈 네이버 스마트스토어는 접속 제한으로 공식 판매자(JMW)의 무신사 상세로 대체했습니다.</li>
-        <li>강조도 매트릭스는 섹션 비중을 기준으로 한 정성 평가입니다.</li>
+        <li>가격은 다나와 차트 값이며 카드 할인·쿠폰은 판매처마다 다릅니다.</li>
+        <li>상세페이지 문구는 이미지를 직접 판독했습니다. 채널에 따라 구성이 다를 수 있습니다.</li>
+        <li>미닉스·바이툴즈는 공식몰 접속이 막혀 공식 판매자 상세로 대체했습니다.</li>
+        <li>스마트카라는 렌탈 비교 사이트(아정당)에 게시된 공식 상세 문구를 사용했습니다.</li>
+        <li>코웨이 3L은 2L 공식 상세와 렌트리 게시 3L 상세를 대조했고 구성이 같았습니다.</li>
+        <li>강조도 매트릭스는 섹션 비중 기준의 정성 평가입니다.</li>
       </ul>
     </div>
   </div>
 </section>
 </main>
-<footer><div class="wrap">음식물처리기 4사 경쟁 분석 · 2026-11-18 기준 · 수치는 출처 표기를 따르며 제조사 주장은 별도 검증 표시</div></footer>
+<footer><div class="wrap">음식물처리기 경쟁 분석 · 2026-11-20 기준 · 제조사 주장은 별도 검증 표시</div></footer>
 
 <script>
-const fmt=n=>n==null?'–':n.toLocaleString('ko-KR')+'원';
-const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-const BR=[['minix','미닉스'],['cuckoo','쿠쿠'],['cuchen','쿠첸'],['bitools','바이툴즈']];
-
-/* spec bars */
-const specs=[
- {t:'처리 용량',hint:'클수록 많이 처리',max:3.2,v:[3,3,3,2.7],f:x=>x+'L'},
- {t:'본체 폭',hint:'짧을수록 공간 절약',max:210,v:[195,199,198,180],f:x=>x+'mm'},
- {t:'건조 온도 (제조사)',hint:'쿠쿠는 수치 미표기',max:170,v:[130,null,165,150],f:x=>x==null?'미표기':x+'℃'},
- {t:'소비전력',hint:'짧을수록 낮음',max:950,v:[900,650,710,500],f:x=>x+'W'},
- {t:'무게',hint:'짧을수록 가벼움',max:13,v:[9.3,12,8.8,8],f:x=>x+'kg'},
- {t:'소음 (제조사)',hint:'짧을수록 조용함',max:25,v:[22.2,23.4,22.1,18.0],f:x=>x+'dB'}
-];
-document.getElementById('specbars').innerHTML=specs.map(s=>`<div class="sb"><h4>${s.t}<span>${s.hint}</span></h4>${s.v.map((v,i)=>`<div class="sb-row b-${BR[i][0]}"><span class="bchip b-${BR[i][0]}">${BR[i][1]}</span><div class="sb-track"><div class="sb-fill" style="width:${v==null?0:(v/s.max*100).toFixed(1)}%"></div></div><span class="sb-val">${s.f(v)}</span></div>`).join('')}</div>`).join('');
-
-/* grouped table helper: rows [cat, label, a,b,c,d, bestIndexes[]] */
-function grouped(id,rows,cell){
-  let html='',prev='';const counts={};rows.forEach(r=>counts[r[0]]=(counts[r[0]]||0)+1);
-  rows.forEach(r=>{html+='<tr>';if(r[0]!==prev){html+=`<td class="cat" rowspan="${counts[r[0]]}">${r[0]}</td>`;prev=r[0];}
-    html+=`<th class="row" style="text-align:left">${r[1]}</th>`+[2,3,4,5].map(k=>`<td data-c="${k}">${cell(r,k)}</td>`).join('')+'</tr>';});
-  document.getElementById(id).innerHTML=html;
-}
-const specRows=[
- ['기본','처리 방식','건조+분쇄','건조+분쇄','건조+분쇄','건조+분쇄'],
- ['기본','출시','2025.11','2026.09 (다나와 등록)','2026.07','2026.08'],
- ['기본','정가','759,000원','769,000원','749,000원','699,000원',[5]],
- ['크기·무게','처리 용량','3L','3L','3L','2.7L',[2,3,4]],
- ['크기·무게','가로×높이×깊이','195×341×422mm','199×348×443mm','198×340×421mm','180×319×345mm',[5]],
- ['크기·무게','무게','9.3kg','12kg','8.8kg','8kg',[5]],
- ['성능','소비전력','900W','650W','710W','500W',[5]],
- ['성능','건조 온도','약 130℃','수치 미표기','165℃','150℃',[4]],
- ['성능','처리 시간','500g 약 2시간','50분 (100g)','수치 미표기','최소 1시간 9분',[3]],
- ['성능','부피 감량률','96%','97.5%','97%','95%',[3]],
- ['성능','분쇄 구조','4중 블레이드<br>+ 2중 커팅','5중 블레이드<br>+ 3중 돌기 브라켓','STS304 3중 브라켓<br>+ 4중 블레이드','V-Cut 4Blade'],
- ['위생·탈취','건조통 코팅','세라믹·Non-stick','G8 강화 코팅<br>100만 회 스크래치','익스트림 코팅<br>100만 회 내마모','듀얼 코팅'],
- ['위생·탈취','탈취 필터','3중 활성탄<br>하드락 필터','활성탄+제올라이트<br>1,100g','3중 복합 활성탄<br>+ 밀폐가드','360° 하이브리드<br>필터'],
- ['유지비','필터 교체 주기','3~4개월','5~6개월','약 3개월<br><small>주 2회 사용</small>','미표기',[3]],
- ['유지비','필터 가격<br><small>정가 / 공식몰 판매가</small>','41,000원<br>/ 24,300원','36,900원','35,000원<br>/ 25,000원','40,000원'],
- ['유지비','전기료 (제조사)','1회 134원<br><small>자체 테스트</small>','1회 25원<br><small>KTR, 100g</small>','미표기','1시간 약 9원<br><small>24시간 900Wh 환산</small>']
-];
-grouped('specTbl',specRows,(r,k)=>{const b=r[6]&&r[6].includes(k);return `<span class="${b?'best':''}">${r[k]}</span>`});
-
-const T='<span class="tick" aria-label="확인">✓</span>',D='<span class="dash" aria-label="미확인">–</span>';
-const featRows=[
- ['자동화','자동 보관',1,1,1,1],['자동화','자동 처리 (센서·오토모드)',1,1,1,1],['자동화','예약 운전',0,1,0,0],['자동화','자동 식힘',0,0,1,0],
- ['사용 편의','작동 중 추가 투입',1,1,1,0],['사용 편의','남은 시간·진행 표시',1,1,0,1],['사용 편의','필터 교체 알림·잔량 표시',0,1,1,0],['사용 편의','잠금',0,1,0,0],
- ['관리·위생','눌음 방지 (전용 모드·설계)',1,1,0,0],['관리·위생','자동·전용 세척',1,1,0,1],
- ['소음','음소거·사일런트 모드',1,0,1,0]
-];
-grouped('featTbl',featRows,(r,k)=>r[k]?T:D);
-
-/* heat matrix */
-const heat=[
- ['성능','3L 대용량',3,3,3,2],['성능','분쇄력 (블레이드)',3,3,2,2],['성능','고온 건조·처리 속도',3,3,2,3],
- ['편의','자동화 (센서·오토모드)',3,2,2,2],['편의','건조통 코팅·눌음 방지',2,3,2,2],['편의','저소음',2,2,2,2],
- ['위생','탈취 필터·밀폐',2,3,3,2],
- ['공간·디자인','한 뼘·슬림 크기',2,2,2,3],['공간·디자인','디자인·인테리어',1,2,3,2],
- ['신뢰·혜택','1위·판매·리뷰 실적',3,3,0,1],['신뢰·혜택','A/S·국내 생산',2,2,2,2],['신뢰·혜택','보조금 안내',2,0,2,2],['신뢰·혜택','전기료',2,2,0,2]
-];
-const rate=x=>x?`<span class="rate ${x===3?'r3':''}">${[1,2,3].map(i=>`<i class="${i<=x?'on':''}"></i>`).join('')}</span>`:D;
-(function(){let html='',prev='';const counts={};heat.forEach(r=>counts[r[0]]=(counts[r[0]]||0)+1);
- heat.forEach(r=>{const v=r.slice(2);const s=v.filter(x=>x>=2).length;const vd=s>=3?'<span class="chip st-na">포화</span>':s===2?'<span class="chip st-warn">경쟁</span>':s===1?'<span class="chip st-ok">단독</span>':'–';
- html+='<tr>'+(r[0]!==prev?`<td class="cat" rowspan="${counts[r[0]]}">${r[0]}</td>`:'')+`<th class="row" style="text-align:left">${r[1]}</th>${v.map(rate).map((x,j)=>`<td data-c="${j+2}">${x}</td>`).join('')}<td>${vd}</td></tr>`;prev=r[0];});
- document.getElementById('heatTbl').innerHTML=html;})();
-
-/* PDP flow with filters */
+const BRAND={minix:'미닉스',cuckoo:'쿠쿠',cuchen:'쿠첸',coway:'코웨이',smartcara:'스마트카라',bitools:'바이툴즈'};
+const M=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월'];
+const N=null;
+const P={
+ max:{b:'minix',name:'더 플렌더 MAX',short:'미닉스 MAX',model:'MNFD-200G',launch:'2025.11 출시',tag:'"음식물 처리의 한계를 초월하다"',list:759000,cur:418990,as:'2년 무상·직접 수거',
+  m:[409960,439960,437690,435390,407120,417100,365000,365000,413010,421520,423590],
+  spec:{cap:'3L',size:'195×341×422',w:'9.3kg',pw:'900W',temp:'약 130℃',time:'500g 약 2시간',red:'96%',blade:'4중 블레이드<br>+ 2중 커팅',coat:'세라믹·Non-stick',filter:'3중 활성탄<br>하드락 필터',cyc:'3~4개월',fp:'41,000원<br>/ 24,300원',el:'1회 134원<br><small>자체 테스트</small>',noise:'18dB (다나와)<br><small>상세 22.2dB</small>'},
+  feat:[1,1,0,1,1,0,0,1,1,0,1],
+  usp:[['강력한 분쇄력','4중 블레이드, 간격 1.0mm'],['130℃ 초고속 처리','500g 약 2시간'],['3L 대용량','한 뼘 크기 유지'],['2세대 완전자동','무게·온도·습도 센싱'],['탈취','유해가스 4종 99.5%'],['저소음','22.2dB, 사일런트 모드']],uspSrc:"'4대 핵심 기능' 이후 번호 순서",
+  diff:['무게를 재서 스스로 작동','남은 시간 8단계 표시','판매·리뷰 실적 숫자'],
+  heat:[3,3,3,3,2,2,2,2,1,3,2,2,2,0],
+  logic:['리더 증명 → 업그레이드','1위 실적 → "유일한 아쉬움은 용량" → 신제품 이유','정부 보조금 최대 80%<br>판매량 압도적 1위','판매·리뷰 숫자<br>특허·품질 테스트','사회적 증거 압도적<br>상위 모델 유도','매우 김<br>채널별 소음 수치 불일치'],
+  flow:[['auth','정부 보조금 최대 80%'],['auth','판매량 압도적 1위'],['auth','누적 658,831대·리뷰 67,574건·4.9점'],['trust','업력 25년·품질연구소·특허 7종'],['hero','MAX 히어로 (3L 용량 UP)'],['cmp','타사 vs MAX / mini·PRO·MAX'],['pain','유일한 아쉬움은 "용량"'],['sum','4대 핵심 기능'],['feat','01 분쇄력'],['feat','02 130℃ 초고속'],['feat','03 3L'],['feat','04 완전자동·트리플 센싱'],['feat','05 탈취 99.5%'],['feat','06 저소음 22.2dB'],['feat','세척·1회 전기료 134원'],['life','가족 라이프'],['info','체크 코드 가이드·FAQ'],['trust','A/S 상담']]},
+ cubemega:{b:'cuckoo',name:'에코웨일 큐브 메가',short:'쿠쿠 큐브 메가',model:'CFD-FNL301DCGW',launch:'2026.09 다나와 등록',tag:'"3L로 돌아온 눌어붙지 않는 음식물처리기"',list:769000,cur:450000,as:'A/S센터 120여 곳',
+  m:[N,N,N,N,N,N,N,N,490000,466170,450000],weekly:true,
+  spec:{cap:'3L',size:'199×348×443',w:'12kg',pw:'650W',temp:'수치 미표기',time:'50분 (100g)',red:'97.5%',blade:'5중 블레이드<br>+ 3중 돌기 브라켓',coat:'G8 강화 코팅<br>100만 회 스크래치',filter:'활성탄+제올라이트<br>1,100g',cyc:'5~6개월',fp:'36,900원',el:'1회 25원<br><small>KTR, 100g</small>',noise:'23.4dB'},
+  feat:[1,1,1,1,1,1,1,1,1,0,0],
+  usp:[['3L 대용량','한 뼘 크기 그대로'],['3세대 건조통','3중 돌기 브라켓 + 5중 블레이드'],['눌음 방지 모드','세척까지 가볍게'],['5중 듀얼케어 필터','활성탄+제올라이트 1,100g'],['50분 초고속 처리','100g 기준']],uspSrc:"상단 'TOP 5' 순서",
+  diff:["'눌어붙지 않는' 건조통",'가장 짧은 처리 시간 표기','KCSI 1위·국내 생산'],
+  heat:[3,3,3,2,3,2,3,2,2,3,2,0,2,0],
+  logic:['권위 → 스펙 우위','KCSI·판매 1위 → TOP5 → 일반 제품 비교표','2026 KCSI 1위<br>리뷰 30,000+','시험성적서<br>비교표·처리 전후','요약→비교→상세가 빠르게 읽힘','소구가 많아 1순위가 흐림'],
+  flow:[['auth','2026 KCSI 1위'],['auth','2L 판매량 1위·리뷰 30,000+·4.8점'],['hero','큐브 메가 히어로'],['sum','TOP 5 요약'],['sum','탈취 세대교체 체크리스트'],['cmp','일반 vs 큐브 메가 비교표'],['feat','3세대 건조통·G8 코팅'],['feat','3중 돌기 브라켓·5중 블레이드'],['feat','BLDC 저소음'],['feat','8가지 모드·눌음 방지'],['feat','중간 투입'],['feat','5중 탈취 필터'],['feat','50분 처리·1회 25원'],['feat','97.5% 감량·99.999% 살균'],['life','한 뼘 19.9cm 디자인'],['feat','자동 보관·세척'],['info','처리 불가 품목·구성품'],['trust','인증·A/S 120여 곳']]},
+ zerofit:{b:'cuchen',name:'제로핏 3L',short:'쿠첸 제로핏',model:'CFP-EN301DBIW',launch:'2026.07 출시',tag:'"처리는 제대로, 흔적은 제로"',list:749000,cur:399000,as:'전국 81개 서비스망',
+  m:[N,N,N,N,N,N,436060,429000,399000,399000,399000],
+  spec:{cap:'3L',size:'198×340×421',w:'8.8kg',pw:'710W',temp:'165℃',time:'수치 미표기',red:'97%',blade:'STS304 3중 브라켓<br>+ 4중 블레이드',coat:'익스트림 코팅<br>100만 회 내마모',filter:'3중 복합 활성탄<br>+ 밀폐가드',cyc:'약 3개월<br><small>주 2회</small>',fp:'35,000원<br>/ 25,000원',el:'미표기',noise:'22.1dB'},
+  feat:[1,1,0,1,0,1,0,0,0,0,1],
+  usp:[['3L 와이드 건조통','원통형 대비 1L 확대'],['냄새 잡는 3가지 기술','활성탄·밀폐가드·잔량 표시'],['STS304 브라켓·4중 블레이드','닭뼈·생선뼈까지'],['165℃ 열 제어 건조','유해세균 99.999% 감소'],['오토모드','강력/표준 자동, 식힘까지'],['보관 모드','최대 이틀'],['중간 투입','작동 중 추가']],uspSrc:"'7가지 포인트' 순서",
+  diff:['건조통 모양으로 실용량 확대','필터 잔량 표시',"'오브제' 디자인·김연아 모델"],
+  heat:[3,2,2,2,2,2,3,2,3,0,2,2,0,0],
+  logic:['문제 → 해결 매핑','구매 고민 질문 6개 → 7개 포인트로 답변','지자체 지원 최대 70%<br>"흔적은 제로"','시험성적서<br>단면도·dB 비교','고민 순서 = 정보 순서','처리 시간 수치 없음<br>사회적 증거 약함'],
+  flow:[['auth','지자체 지원 최대 70%'],['hero','"처리는 제대로, 흔적은 제로"'],['pain','구매 고민 질문 6개'],['pain','매일의 번거로움부터 다시'],['sum','7가지 포인트'],['feat','01 3L 와이드 건조통'],['life','좁은 주방·어디에 두어도'],['feat','02 3중 활성탄·밀폐가드'],['feat','필터 잔량 표시'],['feat','03 STS304 브라켓'],['feat','04 165℃·99.999%'],['feat','05 오토모드·식힘'],['feat','06 보관 · 07 중간 투입'],['feat','저소음 22.1dB'],['trust','개발 2년 4개월·162가지 테스트·81개 서비스망'],['life','오브제 디자인·컬러'],['info','구성품·사양']]},
+ coway3:{b:'coway',name:'제로 음식물 처리기 분쇄형 3L',short:'코웨이 제로 3L',model:'WMG-3004',launch:'2026.05 출시',tag:'"생활을 가볍게 만드는 선택"',list:790000,cur:729190,as:'서비스 매니저 약 1,450명',
+  m:[N,N,N,N,N,701490,693650,693650,694080,764190,729190],
+  spec:{cap:'3L',size:'270×327×390',w:'10.3kg',pw:'620W',temp:'150℃',time:'쾌속 약 1시간<br><small>소량</small>',red:'96.7%',blade:'4중 블레이드<br>(특허 출원)',coat:'세라믹 코팅',filter:'대용량 활성탄<br>1,400g',cyc:'4~6개월',fp:'미확인',el:'1회 약 29원',noise:'18.5dB'},
+  feat:[1,1,0,1,1,1,1,1,1,1,0],
+  usp:[['빠른 처리·강력 분쇄','150℃ 히팅 + 특허 출원 블레이드'],['압도적 탈취','활성탄 1,400g, 유해가스 8종 99%'],['부피 96.7% 감소','고운 가루로 배출'],['저소음','평균 18.5dB'],['저전력','1회 약 29원'],['안심 보관','최대 7일']],uspSrc:'상단 핵심 수치 순서',
+  diff:['국물 요리 처리 명시','렌탈 관리(필터 정기 배송·건조통 1회 교체)','3가지 컬러'],
+  heat:[2,3,3,2,2,2,3,1,2,0,3,2,2,0],
+  logic:['라인업 선택 → 기능 체크','용량별 생활 패턴 → 기능 나열 → 관리 서비스','지자체 지원금 최대 50%<br>2L·3L 선택 가이드','특허 출원·미생물 99.9%<br>BLDC 비교표','렌탈 관리 서비스가 강함','사회적 증거 없음<br>3L 폭 27cm로 슬림 소구 불가'],
+  flow:[['auth','지자체 지원금 최대 50%'],['cmp','2L·3L 생활 패턴별 선택'],['hero','생활을 가볍게 만드는 선택'],['feat','빠른 처리·강력 분쇄 (150℃)'],['feat','눌어붙음 걱정 케어'],['feat','병원성 미생물 99.9%'],['cmp','일반 DC vs BLDC 모터'],['feat','4중 블레이드'],['info','국물·수분 음식 처리 / 투입 불가'],['feat','고운 가루·저전력'],['life','콤팩트 사이즈·3가지 컬러'],['feat','대용량 활성탄 탈취'],['feat','간단한 필터 교체'],['feat','안심 보관 7일'],['feat','저소음'],['feat','자동 세척·유로 분리'],['feat','세라믹 코팅·알림·중간 투입'],['trust','서비스 매니저 1,450명·무상 A/S'],['info','스펙']]},
+ bitools:{b:'bitools',name:'바이툴즈 음식물처리기 2.7L',short:'바이툴즈',model:'FA01A',launch:'2026.08 출시',tag:'"쉽게 쓰는 음식물처리기"',list:699000,cur:405220,as:'JMW 공식 A/S센터',
+  m:[N,N,N,N,N,N,N,N,N,N,N],nodata:'다나와 가격비교 카탈로그 없음',
+  spec:{cap:'2.7L',size:'180×319×345',w:'8kg',pw:'500W',temp:'150℃',time:'최소 1시간 9분',red:'95%',blade:'V-Cut 4Blade',coat:'듀얼 코팅',filter:'360° 하이브리드<br>필터',cyc:'미표기',fp:'40,000원',el:'1시간 약 9원<br><small>24시간 900Wh 환산</small>',noise:'18.0dB'},
+  feat:[1,1,0,0,1,0,0,0,1,0,0],
+  usp:[['공간·용량','동급 최소 18cm, 2.7L'],['150℃ 풀커버 히팅','40초 만에 건조 활성화'],['V-Cut Blade','4Blade, 2mm'],['BY Intelligence','상태 감지 자동 조절'],['최소 1시간 9분','최소 처리 시간'],['트리플 탈취 케어','360° 하이브리드 필터'],['저소음 18.0dB','알림음 BYTULZ Melody']],uspSrc:'기술 소개 순서',
+  diff:['가장 좁은 폭·낮은 소비전력(500W)','헤어드라이어 BLDC·히터 기술 이전'],
+  heat:[2,2,3,2,2,2,2,3,2,1,2,2,2,0],
+  logic:['출신 → 재정의','모기업 기술력 → 작게 vs 크게 딜레마 → 기준 재정의','사전 체험단 후기<br>"열과 공기를 아는 회사"','타사 온도 그래프<br>품질 테스트 135개','신생 약점을 모기업 신뢰로 보완',"판매 실적 부족<br>'최소' 조건 표기 필요"],
+  flow:[['auth','사전 체험단 후기'],['trust','JMW: 열과 공기를 아는 회사'],['hero','쉽게 쓰는 음식물처리기'],['pain','작게 vs 크게 딜레마'],['sum','기준 재정의 4가지'],['feat','18cm·2.7L'],['pain','왜 스트레스는 줄지 않을까'],['trust','BYTULZ Technology'],['feat','150℃ 풀커버 히팅'],['feat','V-Cut Blade'],['feat','BY Intelligence·1시간 9분'],['feat','트리플 탈취·360° 필터'],['feat','보관·세척 모드'],['feat','18.0dB·안전 기능·전기료'],['life','디자인 디테일'],['trust','Made by JMW·A/S 센터'],['auth','보조금 환급 80%'],['info','스펙·FAQ·원스톱 케어']]},
+ mini:{b:'minix',name:'더 플렌더 mini',short:'미닉스 mini',model:'MNFD-300G',launch:'2026.05 출시',tag:'"세상에 없던 1인 가구 맞춤 음식물처리기"',list:499000,cur:282990,as:'공식 A/S 1800-6307',
+  m:[N,N,N,N,N,370000,370000,266280,287500,271790,271790],
+  spec:{cap:'1.5L',size:'170×290×365',w:'6.4kg',pw:'500W',temp:'미표기',time:'퀵모드 약 1시간<br><small>소량</small>',red:'90%',blade:'미표기',coat:'세라믹 코팅',filter:'하드락 필터<br>(2중 탈취)',cyc:'3~4개월',fp:'37,000원<br>/ 17,800원',el:'1회 122원',noise:'23.9dB'},
+  feat:[1,0,0,1,0,0,0,1,1,0,0],
+  usp:[['딱 맞는 용량 1.5L','1인 가구 맞춤'],['냄새 차단','하드락 필터'],['음식물 토탈 케어','보관·처리'],['가장 슬림','폭 17cm'],['강력한 분쇄·건조','부피 90% 감소'],['더 합리적인 가격','정상가 499,000원']],uspSrc:"'선택해야 하는 6가지 이유' 순서",
+  diff:['1인 가구 타깃이 명확','가장 낮은 정가·가장 좁은 폭','퀵모드 약 1시간'],
+  heat:[3,2,2,1,2,2,3,3,2,3,2,0,2,3],
+  logic:['리더 증명 → 1인 가구 타깃','1위·판매 실적 → 1인 가구 고민 → 6가지 이유','압도적 1위<br>누적 658,831대','판매·완판 숫자<br>1인 가구 설문','타깃이 명확','MAX와 같은 실적 증명 반복<br>매우 김'],
+  flow:[['auth','압도적 1위'],['auth','누적 658,831대·리뷰 67,574건·4.9점'],['trust','업력 25년·품질연구소·특허 7종'],['feat','탈취 필터 기술'],['auth','프리런칭 완판·재입고 문의 폭주'],['hero','mini 히어로 (1인 가구 맞춤)'],['life','가장 슬림한 17cm'],['cmp','mini·PRO·MAX 라인업'],['pain','1인 가구 음식물 고민 (설문)'],['sum','선택해야 하는 6가지 이유'],['feat','01 1.5L'],['feat','02 냄새 차단'],['feat','03 토탈 케어'],['feat','04 가장 슬림'],['feat','05 분쇄·건조 90%'],['feat','06 합리적 가격'],['feat','원터치 세척·저소음·1회 122원'],['feat','세라믹 코팅'],['trust','37가지 품질 테스트'],['life','라이프'],['info','FAQ·사용 주의'],['trust','A/S 안내']]},
+ cube2:{b:'cuckoo',name:'에코웨일 큐브 2L',short:'쿠쿠 큐브 2L',model:'CFD-FNL201DCGW',launch:'2026.04 다나와 등록',tag:'"약 19cm 초슬림 큐브 디자인"',list:699000,cur:371280,as:'A/S센터 120여 곳',
+  m:[N,N,N,448890,402210,390000,390000,390000,371090,269990,366970],
+  spec:{cap:'2L',size:'199×348×443',w:'12kg',pw:'650W',temp:'수치 미표기',time:'50분',red:'97%',blade:'4중 블레이드<br>+ 돌기형 커팅 브라켓',coat:'2세대 스트롱팟<br>100만 회 스크래치',filter:'4중 복합 활성탄<br>1,000g',cyc:'3~4개월',fp:'26,900원',el:'1회 24원',noise:'19.2dB (건조)<br><small>24.8dB (분쇄)</small>'},
+  feat:[1,1,1,1,0,1,1,1,1,0,0],
+  usp:[['스트롱팟 건조통·눌음 방지','100만 회 스크래치 테스트'],['자동 시작·예약','손 댈 필요 없는 자동'],['50분 초고속 처리','국내 최단 표기'],['4중 복합 탈취 필터','활성탄 1,000g'],['약 19cm 초슬림 큐브','한 뼘 디자인']],uspSrc:"상단 'TOP 5' 순서",
+  diff:['자동 시작·예약','KCSI 1위·A/S망','런칭 2,500대 완판 표기'],
+  heat:[1,3,3,3,3,2,3,3,2,3,3,2,2,0],
+  logic:['권위 → 스펙 우위','KCSI·A/S·지원금 배너 → TOP5 → 체크리스트','KCSI 1위·A/S 케어<br>정부 지원금 최대 50%','시험성적서<br>0.7mm 단면','TOP5로 핵심이 빨리 보임','상단 배너가 많아 제품 등장이 늦음'],
+  flow:[['auth','2026 KCSI 1위'],['trust','A/S 케어'],['auth','정부 지원금 최대 50%'],['auth','런칭 2,500대 완판·11억 판매'],['hero','큐브 2L 히어로'],['sum','TOP 5 요약'],['pain','편하려고 샀는데 더 번거롭게?'],['sum','쿠쿠를 선택하는 이유'],['feat','2세대 스트롱팟 건조통'],['feat','100만 회 스크래치'],['feat','눌음 방지 모드'],['feat','커팅 브라켓·0.7mm 밀착'],['feat','BLDC 모터'],['info','넣어도 될까?'],['feat','자동 시작·예약'],['feat','1,000g 탈취 필터'],['feat','8가지 모드'],['feat','50분·1회 24원'],['feat','97% 감량·99.999% 살균'],['life','한 뼘 디자인'],['feat','중간 투입·저소음'],['trust','브랜드·A/S'],['info','구성품·사양']]},
+ coway2:{b:'coway',name:'제로 음식물 처리기 분쇄형 2L',short:'코웨이 제로 2L',model:'WMG-2005',launch:'2026.05 출시',tag:'"생활을 가볍게 만드는 선택"',list:670000,cur:639990,as:'서비스 매니저 약 1,450명',
+  m:[N,N,N,N,N,590380,N,N,586380,646590,636500],gap:'7~8월 19,900원은 렌탈 월요금 리스팅으로 보여 제외',
+  spec:{cap:'2L',size:'189×327×380',w:'8kg',pw:'620W',temp:'150℃',time:'쾌속 약 1시간<br><small>소량</small>',red:'96.5%',blade:'4중 블레이드<br>(특허 출원)',coat:'세라믹 코팅',filter:'대용량 활성탄',cyc:'4~6개월',fp:'미확인',el:'1회 약 26원',noise:'18.7dB'},
+  feat:[1,1,0,1,1,1,1,1,1,1,0],
+  usp:[['빠른 처리·강력 분쇄','150℃ 히팅 + 특허 출원 블레이드'],['압도적 탈취','유해가스 8종 99%'],['부피 96.5% 감소','고운 가루로 배출'],['18.9cm 콤팩트','3가지 컬러'],['저소음','18.7dB'],['안심 보관','최대 7일']],uspSrc:'상단 핵심 수치·섹션 순서',
+  diff:['국물 요리 처리 명시','렌탈 관리(필터 정기 배송·건조통 1회 교체)','동물 뼈는 투입 불가로 안내'],
+  heat:[2,3,3,2,2,2,3,2,2,0,3,2,2,0],
+  logic:['라인업 선택 → 기능 체크','용량별 생활 패턴 → 기능 나열 → 관리 서비스','지자체 지원금 최대 50%<br>2L·3L 선택 가이드','특허 출원·미생물 99.9%<br>BLDC 비교표','렌탈 관리 서비스가 강함','사회적 증거 없음<br>판매가가 높음'],
+  flow:[['auth','지자체 지원금 최대 50%'],['cmp','2L·3L 생활 패턴별 선택'],['hero','생활을 가볍게 만드는 선택'],['feat','빠른 처리·강력 분쇄 (150℃)'],['feat','눌어붙음 걱정 케어'],['feat','병원성 미생물 99.9%'],['cmp','일반 DC vs BLDC 모터'],['feat','4중 블레이드'],['info','국물·수분 음식 처리 / 투입 불가'],['feat','고운 가루·저전력'],['life','18.9cm·3가지 컬러'],['feat','대용량 활성탄 탈취'],['feat','간단한 필터 교체'],['feat','안심 보관 7일'],['feat','저소음 18.7dB'],['feat','자동 세척·유로 분리'],['feat','세라믹 코팅·알림·중간 투입'],['trust','서비스 매니저 1,450명·무상 A/S'],['info','스펙']]},
+ stone:{b:'smartcara',name:'스마트카라 스톤',short:'스마트카라 스톤',model:'SC-S0201',launch:'2025.12 공개',tag:'"화강암의 단단함을 품다"',list:N,cur:358420,as:'1년 무상 A/S',
+  m:[371650,381180,381280,366800,379680,389480,385310,371270,360350,342380,335410],
+  spec:{cap:'2L',size:'190×350×418',w:'9kg',pw:'500W',temp:'미표기',time:'2시간 30분<br>~8시간 40분',red:'91.2%',blade:'미표기<br><small>치킨 뼈까지 분쇄</small>',coat:'화강암 코팅<br>7중 레이어',filter:'듀얼 카본 필터',cyc:'최대 6개월',fp:'미확인',el:'1회 107원',noise:'22.4dB'},
+  feat:[1,0,0,1,1,0,0,1,0,0,0],
+  usp:[['화강암 코팅 건조통','코팅 두께 약 2배'],['강력 처리','치킨 뼈까지'],['듀얼 카본 필터','최대 6개월'],['초슬림','폭 19cm'],['100% 국내 설계·생산','Made in Korea']],uspSrc:"'핵심 요약' 순서",
+  diff:['눌어붙음 문제 하나에 집중','폴딩도어 열림 높이 12.5cm','OLED 남은 시간 표시'],
+  heat:[1,2,0,1,3,2,2,2,1,3,2,2,2,0],
+  logic:['문제(눌음) → 소재 해법','선택 이유 5가지 → 눌어붙는 이유 → 화강암 건조통','"화강암의 단단함을 품다"<br>선택 이유 5가지','코팅 두께·내구성 비교<br>36가지 테스트·수상','한 가지 문제에 집중','수상 연수 표기 불일치<br>처리 시간 최대 8시간 40분'],
+  flow:[['hero','화강암의 단단함을 품다'],['auth','선택 이유 5가지 (1위·17년·38만 대·4.9점)'],['sum','핵심 요약'],['pain','왜 눌어붙을까?'],['feat','화강암 7중 레이어 건조통'],['feat','코팅 두께 약 2배'],['cmp','비점착 1.8배·내마모 2.5배'],['life','슬림 19cm'],['feat','필터 최대 6개월'],['feat','01 OLED 남은 시간'],['feat','02 강력 처리'],['feat','03 부피 91.2% 감소'],['feat','04 중간 투입'],['feat','05 자동 보관 7일'],['feat','06 폴딩도어 12.5cm'],['feat','07 1회 107원'],['feat','08 22.4dB'],['trust','36가지 신뢰성 테스트'],['auth','Q마크·보조금 대상'],['auth','수상 내역'],['trust','1년 무상 A/S'],['info','상담·안내']]}
+};
+const TABS={
+ '3l':{label:'3L급 (3L·2.7L)',ids:['max','cubemega','zerofit','coway3','bitools'],ymin:300000,ymax:800000,
+  sum:[['스펙','5종 중 4종이 3L',['바이툴즈만 2.7L','폭 18~20cm, 코웨이만 27cm','고온 표기: 쿠첸 165℃, 코웨이·바이툴즈 150℃']],
+       ['가격','실판매 40만원대, 코웨이만 70만원대',['정가 69.9~79만원','코웨이 외 4종은 할인율 41~47%','코웨이는 할인율 7.7% (렌탈 중심)']],
+       ['USP','상세페이지 시작점이 모두 다름',['미닉스·쿠쿠: 1위 실적','쿠첸: 고민 질문','코웨이: 용량 선택 가이드','바이툴즈: 모기업 기술']]]},
+ '2l':{label:'2L급 (2L·1.5L)',ids:['mini','cube2','coway2','stone'],ymin:200000,ymax:700000,
+  sum:[['스펙','4종 모두 폭 17~20cm',['미닉스 mini만 1.5L (폭 17cm)','처리 시간: 쿠쿠 50분 ~ 스마트카라 최대 8시간 40분','소음: 코웨이 18.7dB가 가장 낮음']],
+       ['가격','실판매 28~37만원대, 코웨이만 64만원대',['미닉스 mini: 6월→11월 -26.5%','쿠쿠 큐브 2L: 10월 27.0만원 특가','스마트카라: 1월→11월 -9.8%']],
+       ['USP','눌음 방지·슬림이 공통 키워드',['쿠쿠·스마트카라: 건조통 내구성이 1순위','미닉스: 1인 가구 용량','코웨이: 분쇄·탈취']]]}
+};
+const SPEC_ROWS=[['기본','정가','list'],['기본','출시','launch'],['크기·무게','처리 용량','cap'],['크기·무게','크기 (mm)','size'],['크기·무게','무게','w'],['성능','소비전력','pw'],['성능','건조 온도','temp'],['성능','처리 시간','time'],['성능','부피 감량률','red'],['성능','분쇄 구조','blade'],['위생·탈취','건조통 코팅','coat'],['위생·탈취','탈취 필터','filter'],['위생·탈취','소음','noise'],['유지비','필터 교체 주기','cyc'],['유지비','필터 가격<br><small>정가 / 공식몰가</small>','fp'],['유지비','전기료 (제조사)','el']];
+const BEST={'3l':{list:'bitools',size:'bitools',w:'bitools',pw:'bitools',temp:'zerofit',time:'cubemega',red:'cubemega',cyc:'cubemega',noise:'bitools'},'2l':{list:'mini',size:'mini',w:'mini',pw:'mini',time:'cube2',red:'cube2',cyc:'stone',noise:'coway2'}};
+const FEAT_ROWS=[['자동화','자동 보관'],['자동화','자동 처리 (센서·오토)'],['자동화','예약 운전'],['사용 편의','작동 중 추가 투입'],['사용 편의','남은 시간·진행 표시'],['사용 편의','필터 교체 알림'],['사용 편의','잠금'],['관리·위생','눌음 방지 (모드·설계)'],['관리·위생','자동·전용 세척'],['관리·위생','UV 살균'],['소음','음소거·사일런트 모드']];
+const HEAT_ROWS=[['성능','용량'],['성능','분쇄력'],['성능','고온·처리 속도'],['편의','자동화'],['편의','코팅·눌음 방지'],['편의','저소음'],['위생','탈취·밀폐'],['공간·디자인','슬림 크기'],['공간·디자인','디자인·인테리어'],['신뢰·혜택','1위·판매 실적'],['신뢰·혜택','A/S·관리'],['신뢰·혜택','보조금 안내'],['신뢰·혜택','전기료'],['신뢰·혜택','가격 합리성']];
+const LOGIC_ROWS=['설득 공식','전개','첫 화면','증명 방식','강점','약점'];
 const KIND={auth:'권위·1위',hero:'히어로',pain:'고민·문제',sum:'요약',cmp:'비교',feat:'기능 상세',life:'공간·라이프',trust:'신뢰·A/S',info:'정보·FAQ'};
-const flows=[
- {k:'minix',b:'미닉스 MAX',logic:'리더 증명 → 업그레이드',s:[['auth','정부 보조금 최대 80%'],['auth','판매량 압도적 1위'],['auth','누적 658,831대·리뷰 67,574건·4.9점'],['trust','업력 25년·품질연구소·특허 7종'],['hero','MAX 히어로 (3L 용량 UP)'],['cmp','타사 vs MAX / mini·PRO·MAX'],['pain','유일한 아쉬움은 "용량"'],['sum','4대 핵심 기능'],['feat','01 분쇄력'],['feat','02 130℃ 초고속'],['feat','03 3L'],['feat','04 완전자동·트리플 센싱'],['feat','05 탈취 99.5%'],['feat','06 저소음 22.2dB'],['feat','세척·1회 전기료 134원'],['life','가족 라이프'],['info','체크 코드 가이드·FAQ'],['trust','A/S 상담']]},
- {k:'cuckoo',b:'쿠쿠 큐브 메가',logic:'권위 → 스펙 우위',s:[['auth','2026 KCSI 1위'],['auth','2L 판매량 1위·리뷰 30,000+·4.8점'],['hero','큐브 메가 히어로'],['sum','TOP 5 요약'],['sum','탈취 세대교체 체크리스트'],['cmp','일반 vs 큐브 메가 비교표'],['feat','3세대 건조통·G8 코팅'],['feat','3중 돌기 브라켓·5중 블레이드'],['feat','BLDC 저소음'],['feat','8가지 모드·눌음 방지'],['feat','중간 투입'],['feat','5중 탈취 필터'],['feat','50분 처리·1회 25원'],['feat','97.5% 감량·99.999% 살균'],['life','한 뼘 19.9cm 디자인'],['feat','자동 보관·세척'],['info','처리 불가 품목·구성품'],['trust','인증·A/S 120여 곳']]},
- {k:'cuchen',b:'쿠첸 제로핏',logic:'문제 → 해결 매핑',s:[['auth','지자체 지원 최대 70%'],['hero','"처리는 제대로, 흔적은 제로"'],['pain','구매 고민 질문 6개'],['pain','매일의 번거로움부터 다시'],['sum','7가지 포인트'],['feat','01 3L 와이드 건조통'],['life','좁은 주방·어디에 두어도'],['feat','02 3중 활성탄·밀폐가드'],['feat','필터 잔량 표시'],['feat','03 STS304 브라켓'],['feat','04 165℃·99.999%'],['feat','05 오토모드·식힘'],['feat','06 보관 · 07 중간 투입'],['feat','저소음 22.1dB'],['trust','개발 2년 4개월·162가지 테스트·81개 서비스망'],['life','오브제 디자인·컬러'],['info','구성품·사양']]},
- {k:'bitools',b:'바이툴즈',logic:'출신 → 재정의',s:[['auth','사전 체험단 후기'],['trust','JMW: 열과 공기를 아는 회사'],['hero','쉽게 쓰는 음식물처리기'],['pain','작게 vs 크게 딜레마'],['sum','기준 재정의 4가지'],['feat','18cm·2.7L'],['pain','왜 스트레스는 줄지 않을까'],['trust','BYTULZ Technology'],['feat','150℃ 풀커버 히팅'],['feat','V-Cut Blade'],['feat','BY Intelligence·1시간 9분'],['feat','트리플 탈취·360° 필터'],['feat','보관·세척 모드'],['feat','18.0dB·안전 기능·전기료'],['life','디자인 디테일'],['trust','Made by JMW·A/S 센터'],['auth','보조금 환급 80%'],['info','스펙·FAQ·원스톱 케어']]}
-];
-let fBrand='all',fKind='all';
-const fb=document.getElementById('flowBrand'),fk=document.getElementById('flowKind');
-fb.insertAdjacentHTML('beforeend',`<button data-v="all" aria-pressed="true">전체</button>`+flows.map(f=>`<button data-v="${f.k}" aria-pressed="false" class="b-${f.k}"><span class="sw"></span>${f.b}</button>`).join(''));
-fk.insertAdjacentHTML('beforeend',`<button data-v="all" aria-pressed="true">전체</button>`+Object.entries(KIND).map(([k,v])=>`<button data-v="${k}" aria-pressed="false" class="kbtn k-${k}">${v}</button>`).join(''));
-function renderFlow(){
-  const list=flows.filter(f=>fBrand==='all'||f.k===fBrand);
-  document.getElementById('flow').innerHTML=list.map(f=>{const n=f.s.filter(x=>fKind==='all'||x[0]===fKind).length;
-    return `<div class="lane"><div class="who"><button data-brand="${f.k}" title="이 제품만 보기"><span class="bchip b-${f.k}">${f.b}</span></button><span class="logic">${f.logic}</span>${fKind!=='all'?`<span class="chip st-na">${KIND[fKind]} ${n}개</span>`:`<span class="fine">총 ${f.s.length}개 섹션</span><div class="mix">${Object.keys(KIND).map(k=>[k,f.s.filter(x=>x[0]===k).length]).filter(x=>x[1]).map(([k,n])=>`<span class="k-${k}">${KIND[k]} <b>${n}</b></span>`).join('')}</div>`}</div><div class="steps">${f.s.map((x,i)=>`<span class="step k-${x[0]} ${fKind!=='all'&&x[0]!==fKind?'dim':''}"><span class="n">${String(i+1).padStart(2,'0')} · ${KIND[x[0]]}</span>${x[1]}</span>`).join('')}</div></div>`}).join('');
-  document.getElementById('flowCount').textContent=(fBrand==='all'?'전체 제품':flows.find(f=>f.k===fBrand).b)+' · '+(fKind==='all'?'모든 역할':KIND[fKind]+' 섹션만 강조');
-  fb.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===fBrand));
-  fk.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===fKind));
-  document.querySelectorAll('#flow .who button').forEach(b=>b.addEventListener('click',()=>{fBrand=fBrand===b.dataset.brand?'all':b.dataset.brand;renderFlow();}));
-}
-fb.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;fBrand=b.dataset.v;renderFlow();});
-fk.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;fKind=b.dataset.v;renderFlow();});
-renderFlow();
-
-/* fact table */
 const L={
- dnMax:['다나와 MAX','https://prod.danawa.com/info/?pcode=101071457'],kurly:['컬리 MAX 상세','https://www.kurly.com/goods/1001728375'],
- plan:['다나와 기획전','https://plan.danawa.com/info/?nPlanSeq=11940'],nd1:['뉴데일리 출시','https://biz.newdaily.co.kr/site/data/html/2025/11/03/2025110300079.amp.html'],
- nd2:['뉴데일리 6만 대','https://biz.newdaily.co.kr/site/data/html/2026/02/25/2026022500160.amp.html'],rentre:['렌트리 상세','https://rentre.kr/product/1600006778/%EB%8D%94%ED%94%8C%EB%A0%8C%EB%8D%94-max-%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC-3l'],
- minixf:['미닉스 공식몰','https://minix.life/product/list.html?cate_no=62'],kcsi:['베이비뉴스','https://www.ibabynews.com/news/articleView.html?idxno=154957'],
- ck:['쿠쿠몰 상세','https://www.cuckoo.co.kr/mall/productView?productNo=11263'],dnCube:['다나와 큐브 메가','https://prod.danawa.com/info/?pcode=124102411'],
- asiae:['아시아경제','https://view.asiae.co.kr/article/2026071309362815370'],dnZero:['다나와 제로핏','https://prod.danawa.com/info/?pcode=123032088'],
- chm:['쿠첸몰 상세','https://www.cuchenmall.co.kr/shop/detail.php?pno=0FD4B8A8354A77A3FA75E3D97E7A34E6'],
- vegan:['비건뉴스','https://www.vegannews.co.kr/news/article.html?no=384647'],segye:['세계일보 mini','https://www.segye.com/newsView/20260905501824'],
- mus:['무신사 상세','https://www.musinsa.com/products/7218160'],herald:['헤럴드경제','https://www.heraldk.com/article/2026040918390746870'],
- dnB:['다나와 검색','https://search.danawa.com/dsearch.php?query=%EB%B0%94%EC%9D%B4%ED%88%B4%EC%A6%88+%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0']
+ dnMax:['다나와 MAX','https://prod.danawa.com/info/?pcode=101071457'],kurly:['컬리 MAX 상세','https://www.kurly.com/goods/1001728375'],plan:['다나와 기획전','https://plan.danawa.com/info/?nPlanSeq=11940'],
+ nd1:['뉴데일리 출시','https://biz.newdaily.co.kr/site/data/html/2025/11/03/2025110300079.amp.html'],nd2:['뉴데일리 6만 대','https://biz.newdaily.co.kr/site/data/html/2026/02/25/2026022500160.amp.html'],
+ rentre:['렌트리 MAX 상세','https://rentre.kr/product/1600006778/%EB%8D%94%ED%94%8C%EB%A0%8C%EB%8D%94-max-%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC-3l'],
+ minixf:['미닉스 공식몰','https://minix.life/product/list.html?cate_no=62'],dnMini:['다나와 mini','https://prod.danawa.com/info/?pcode=122694803'],segMini:['세계일보 mini','https://www.segye.com/newsView/20260905501824'],
+ kurlyMini:['컬리 mini 상세','https://www.kurly.com/goods/1002313182'],c29:['29CM 라이브','https://www.29cm.co.kr/content/29live/2026/08/minix'],
+ kcsi:['베이비뉴스','https://www.ibabynews.com/news/articleView.html?idxno=154957'],ck:['쿠쿠몰 큐브 메가','https://www.cuckoo.co.kr/mall/productView?productNo=11263'],ck2:['쿠쿠몰 큐브 2L','https://www.cuckoo.co.kr/mall/productView?productNo=10334'],
+ dnCube:['다나와 큐브 메가','https://prod.danawa.com/info/?pcode=124102411'],dnCube2:['다나와 큐브 2L','https://prod.danawa.com/info/?pcode=122621378'],
+ asiae:['아시아경제','https://view.asiae.co.kr/article/2026071309362815370'],dnZero:['다나와 제로핏','https://prod.danawa.com/info/?pcode=123032088'],chm:['쿠첸몰 상세','https://www.cuchenmall.co.kr/shop/detail.php?pno=0FD4B8A8354A77A3FA75E3D97E7A34E6'],
+ vegan:['비건뉴스','https://www.vegannews.co.kr/news/article.html?no=384647'],mus:['무신사 상세','https://www.musinsa.com/products/7218160'],dnB:['다나와 검색','https://search.danawa.com/dsearch.php?query=%EB%B0%94%EC%9D%B4%ED%88%B4%EC%A6%88+%EC%9D%8C%EC%8B%9D%EB%AC%BC%EC%B2%98%EB%A6%AC%EA%B8%B0'],
+ inews:['아이뉴스24','https://www.inews24.com/view/1972391'],cw2:['코웨이 2L 상세','https://www.coway.com/product/detail?prdno=1493&optno=1'],
+ st11:['11번가 코웨이','https://m.11st.co.kr/products/9411828455'],rtCw2:['렌트리 2L 렌탈','https://rentre.kr/product/1600007583/%EC%A0%9C%EB%A1%9C-%EC%9D%8C%EC%8B%9D%EB%AC%BC-%EC%B2%98%EB%A6%AC%EA%B8%B0-%EB%B6%84%EC%87%84%ED%98%95-2l'],
+ dnCw2:['다나와 코웨이 2L','https://prod.danawa.com/info/?pcode=122684803'],
+ dnSC:['다나와 스톤','https://prod.danawa.com/info/?pcode=103483682'],ajd:['아정당 게시 상세','https://www.ajd.co.kr/electronics/overview/2105/detail/54501'],stoday:['스마트투데이','https://www.smarttoday.co.kr/ko-kr/articles/98190'],
+ herald:['헤럴드경제','https://www.heraldk.com/article/2026040918390746870']
 };
 const ST={ok:['확인','st-ok'],cond:['조건부','st-warn'],bad:['불일치','st-bad'],na:['확인 불가','st-na']};
-const facts=[
- ['minix','MAX 소음 22.2dB (PDP)','PDP는 KCL 시험·사일런트 모드 기준 22.2dB<br>다나와 사양은 18dB로 등록','bad',['kurly','dnMax']],
- ['minix','"판매량 압도적 1위"','다나와 기획전 \'12월 판매량\' 점유율 44%(쿠쿠 17%)<br>특정 채널·기간 기준이며 연도 미표기','cond',['plan']],
- ['minix','MAX 2025.11.3 출시<br>정가 759,000원·론칭가 459,000원','출시일·정가·론칭가 모두 보도와 일치','ok',['nd1']],
- ['minix','MAX 출시 4개월 내 누적 6만 대','보도로 확인(회사 발표 인용)','ok',['nd2']],
- ['minix','누적 판매 658,831대·특허 7종','제3자 자료 없음<br>다른 시점 상세에는 \'누적 30만 대(2025.9)·특허 5개\'','na',['kurly','rentre']],
- ['minix','1회 전기료 134원','자체 테스트, 1일 1회 평균 사용료 기준(각주)','cond',['kurly']],
- ['minix','MAX 전용 필터 41,000원','공식몰 소비자가 41,000원, 판매가 24,300원','ok',['minixf']],
- ['cuckoo','2026 KCSI 음식물처리기 1위','보도로 확인','ok',['kcsi']],
- ['cuckoo','"2L 음식물처리기 판매량 1위"','PDP 각주의 모델·채널·기간 한정 조건<br>전체 시장 1위 의미 아님','cond',['ck']],
- ['cuckoo','한 뼘 크기 19.9cm','다나와 가로 199mm와 일치','ok',['dnCube']],
- ['cuckoo','1회 사용 25원','KTR 시험, 쾌속모드 1일 1회·100g 기준(각주)','cond',['ck']],
- ['cuckoo','A/S센터 120여 곳','PDP 표기 "120여 개 이상 A/S센터(쿠쿠스토어)"','ok',['ck']],
- ['cuchen','제로핏 2026.7.13 출시·약 19cm·3L','보도자료·다나와(가로 198mm, 2026.07 등록) 일치','ok',['asiae','dnZero']],
- ['cuchen','3중 스마트 밀폐가드 특허','"특허 출원"으로 표기(등록 아님), 표현은 정확','ok',['asiae']],
- ['cuchen','필터 약 3개월 사용','쿠첸몰 FAQ: 주 2회 사용 기준 약 3개월','ok',['chm']],
- ['bitools','"국내 최소 사이즈 18cm"','미닉스 mini는 폭 17cm(1.5L)<br>\'동급(2.7L급)\' 조건이 붙어야 성립','cond',['segye','vegan']],
- ['bitools','2026.8 론칭·2.7L·150℃·최소 1시간 9분','보도 내용과 일치<br>처리 시간은 투입량에 따라 다르다고 회사도 명시','ok',['vegan']],
- ['bitools','전기요금 약 9원','1회가 아닌 1시간 기준<br>24시간 소비전력 약 900Wh 환산(각주)','cond',['mus']],
- ['bitools','다나와 가격 추이','가격비교 카탈로그 미등록(\'가격비교 0건\')<br>월별 추이 산출 불가','na',['dnB']],
- ['common','보조금 \'최대 70~80%\'','지자체별 사업으로 지역·예산·대상 제품이 다름<br>모든 구매자에게 적용되지 않음','cond',['herald']],
- ['common','전기료 9원·25원·134원','기준(1시간·1회·평균)이 서로 달라 비교 불가','cond',['mus','ck','kurly']]
+const FACTS=[
+ ['minix','3l','MAX 소음 22.2dB (상세페이지)','상세: KCL 시험·사일런트 모드 기준 22.2dB<br>다나와 사양: 18dB','bad',['kurly','dnMax']],
+ ['minix','all','"판매량 압도적 1위"',"다나와 기획전 '12월 판매량' 점유율 44%<br>특정 채널·기간 기준",'cond',['plan']],
+ ['minix','all','누적 판매 658,831대·특허 7종','제3자 자료 없음<br>다른 시점 상세: 누적 30만 대·특허 5개','na',['kurly','rentre']],
+ ['minix','3l','MAX 2025.11.3 출시·정가 759,000원','보도와 일치. 출시 4개월 내 누적 6만 대 보도','ok',['nd1','nd2']],
+ ['minix','3l','MAX 전용 필터 41,000원','공식몰 소비자가 41,000원, 판매가 24,300원','ok',['minixf']],
+ ['minix','2l','mini 1.5L·폭 17cm','다나와 170mm·1.5L, 보도와 일치','ok',['dnMini','segMini']],
+ ['minix','2l','mini 정상가 499,000원·2026.05 출시','29CM 라이브 정상가, 컬리 상세의 출시년월과 일치','ok',['c29','kurlyMini']],
+ ['minix','2l','mini 전용 필터 37,000원','공식몰 소비자가 37,000원, 판매가 17,800원','ok',['minixf']],
+ ['cuckoo','all','2026 KCSI 음식물처리기 1위','보도로 확인','ok',['kcsi']],
+ ['cuckoo','3l','한 뼘 19.9cm·1회 25원','다나와 가로 199mm 일치<br>25원은 KTR 시험·쾌속모드·100g 기준','cond',['dnCube','ck']],
+ ['cuckoo','2l','런칭 2,500대 완판·11억 판매','상세페이지 표기만 있음. 제3자 자료 없음','na',['ck2']],
+ ['cuckoo','2l','약 19cm 초슬림','다나와 가로 199mm 일치','ok',['dnCube2']],
+ ['cuchen','3l','제로핏 2026.7.13 출시·약 19cm·3L','보도·다나와(198mm) 일치','ok',['asiae','dnZero']],
+ ['cuchen','3l','다나와 월별 가격 = 그 달 최저가','주간값(39.9만~44.9만원)과 대조해 확인','ok',['dnZero']],
+ ['cuchen','3l','필터 약 3개월 사용','쿠첸몰 FAQ: 주 2회 사용 기준','ok',['chm']],
+ ['coway','all','2026.5 출시·150℃·7일 보관','보도·공식 상세와 일치<br>부피 감소 2L 96.5%, 3L 96.7%','ok',['inews','cw2']],
+ ['coway','all','국물 요리 처리, 동물 뼈 투입 불가','공식 상세에 명시<br>쿠첸·스마트카라는 뼈 처리 가능으로 소구','ok',['cw2']],
+ ['coway','3l','3L 소비자가 790,000원','11번가 코웨이브랜드스토어 표기','ok',['st11']],
+ ['coway','2l','2L 구매가 670,000원','코웨이 공식몰 표기','ok',['cw2']],
+ ['coway','2l','다나와 7~8월 19,900원','렌탈 월요금(2L 월 18,900원대) 리스팅으로 보여 추이에서 제외','cond',['dnCw2','rtCw2']],
+ ['smartcara','2l','모델명 SC-S0201','다나와 표기는 숫자 0 (SC-S0201)','ok',['dnSC']],
+ ['smartcara','2l','브랜드파워 1위 "3년 연속"','같은 상세 하단 수상 표에는 "4년 연속(2023~2026)"','bad',['ajd']],
+ ['smartcara','2l','"국내·업계 최초 화강암 건조통"','제3자 자료 없음','na',['ajd']],
+ ['smartcara','2l','폭 19cm·2025.12 공개','다나와 190mm, 보도와 일치','ok',['dnSC','stoday']],
+ ['bitools','3l','"국내 최소 사이즈 18cm"',"미닉스 mini는 17cm<br>'동급(2.7L급)' 조건이 붙어야 성립",'cond',['segMini','vegan']],
+ ['bitools','3l','2026.8 론칭·150℃·최소 1시간 9분','보도와 일치','ok',['vegan']],
+ ['bitools','3l','전기요금 약 9원','1회가 아닌 1시간 기준(24시간 900Wh 환산)','cond',['mus']],
+ ['bitools','3l','다나와 가격 추이','가격비교 카탈로그 미등록','na',['dnB']],
+ ['common','all',"보조금 '최대 50~80%'",'지자체별 사업으로 지역·예산·대상 제품이 다름','cond',['herald']],
+ ['common','all','1회 전기료 비교','기준(1회·1시간·평균)과 투입량이 달라 비교 불가','cond',['ck','mus','kurly']]
 ];
-const BN={minix:'미닉스',cuckoo:'쿠쿠',cuchen:'쿠첸',bitools:'바이툴즈',common:'공통'};
-let fFact='minix';const fbt=document.getElementById('factBrand');
-fbt.insertAdjacentHTML('beforeend',`<button data-v="all" aria-pressed="true">전체</button>`+Object.entries(BN).map(([k,v])=>`<button data-v="${k}" aria-pressed="false" class="${k!=='common'?'b-'+k:''}">${k!=='common'?'<span class="sw"></span>':''}${v}</button>`).join(''));
-function renderFact(){
-  const rows=facts.filter(f=>fFact==='all'||f[0]===fFact);
-  document.getElementById('factTbl').innerHTML=rows.map(f=>`<tr><td>${f[0]==='common'?'<b>공통</b>':`<span class="bchip b-${f[0]}">${BN[f[0]]}</span>`}</td><td><b>${f[1]}</b></td><td style="color:var(--ink-2)">${f[2]}</td><td style="text-align:center"><span class="chip ${ST[f[3]][1]}">${ST[f[3]][0]}</span></td><td>${f[4].map(k=>`<a href="${L[k][1]}">${L[k][0]}</a>`).join('<br>')}</td></tr>`).join('');
-  const c={};rows.forEach(r=>c[r[3]]=(c[r[3]]||0)+1);
-  document.getElementById('factCount').textContent=`${rows.length}건 · `+Object.entries(ST).filter(([k])=>c[k]).map(([k,v])=>`${v[0]} ${c[k]}`).join(' · ');
-  fbt.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===fFact));
-}
-fbt.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;fFact=b.dataset.v;renderFact();});
-renderFact();
-
-/* proposal: blocks, notes, content */
-const P={
- 1:{blocks:[['hero','히어로','약속 1줄 + 증거 칩 3개'],['pain','구매 전 고민 5가지','누르면 답변 블록으로 이동'],['sum','USP 3 요약','숫자 + 조건 각주'],['feat','유지비 계산기','사용 빈도 → 연간 비용'],['feat','한식 실측 테스트','메뉴별 전후·시간'],['feat','냄새·소음 증명','측정 조건 공개'],['cmp','기본 스펙 체크표','용량·자동·중간 투입'],['life','설치 시뮬레이션','실측 도면·상판 높이'],['info','넣어도 되는 것 / 안 되는 것',''],['trust','보증·A/S·생산지',''],['auth','리뷰·전문가 평가','출시 초기엔 체험단'],['info','FAQ·스펙·보조금 안내','']],
-  notes:[
-   ['01','히어로: 약속 하나, 증거 셋',['헤드라인에 비교 가능한 숫자 1개 (예: 1년 유지비 ○만원)','아래에 3L·한 뼘·○℃ 칩','보조금 배너는 \'지자체별 상이\' 문구와 함께 하단 배치']],
-   ['02','고민 목록으로 시작',['쿠첸 방식 차용: 냄새·전기료·국물·필터값·소음 질문 5개','각 질문을 누르면 해당 블록으로 이동','긴 PDP의 탐색 부담 감소']],
-   ['04','유지비 계산기',['주 사용 횟수 선택 → 필터·전기료 연간 합계','타사 비교 없이 자사 조건만 투명하게 공개','경쟁 4사 중 연간 유지비를 계산해 주는 PDP는 없음']],
-   ['05','한식 실측 테스트',['김치찌개 국물·치킨뼈·수박 껍질·생선 등 5종','투입 무게·처리 시간·결과 무게를 표 + 타임랩스로','처리 불가 사례도 함께 공개']],
-   ['06','조건을 밝힌 수치',['dB: 측정 거리·모드와 함께','탈취율: 시험 기관·가스 종류와 함께','채널마다 같은 수치 유지 (미닉스 18dB/22.2dB 불일치 사례 방지)']],
-   ['07~12','기본 충족 확인용',['용량·크기·자동 기능은 표 한 장으로 압축','공간·A/S·리뷰·FAQ로 마무리','실적 소구는 출시 초기엔 체험단·전문가 리뷰로 대체']]],
-  head:['콘텐츠','형식','블록','목적','측정 지표'],
-  content:[['15초 히어로 숏폼','세로 영상','01','투입→완료→결과물을 한 번에','첫 화면 이탈률'],['유지비 계산기','인터랙티브','04','구매 후 비용 불안 해소','계산기 사용률·전환율'],['한식 5종 타임랩스','영상 + 표','05','국물·뼈 처리 실증','영상 재생 완료율'],['측정 조건 카드','표','06','소음·탈취 수치 신뢰','블록 체류 시간'],['설치 시뮬레이터','도면 + 주방 사진','08','"우리 집에 들어갈까" 해소','사이즈 문의 비율'],['처리 가능/불가 품목','아이콘 그리드','09','잘못된 사용으로 인한 불만 예방','A/S·반품 사유'],['보조금 안내','체크리스트 + 링크','12','실구매가 인하 정보','안내 클릭률']]},
- 2:{blocks:[['hero','디자인 히어로','오브제 컷 + 컬러 전환','3D 360°'],['life','우리 집에 두면','실측 치수·뚜껑 열림 높이','AR 배치'],['feat','냄새 걱정 없는 이유','필터·밀폐 구조','3D 분해 뷰'],['feat','조용하고 강하게','소음 dB + 뼈·국물 처리','3D 단면'],['feat','관리는 한 번에','필터 주기·연간 비용·세척','3D 모션'],['trust','구매 확신','보증·A/S·보조금·가격',''],['info','더 알아보기 (접힘)','스펙·처리 불가 품목·FAQ','']],
-  notes:[
-   ['01','디자인 히어로',['첫 화면 = 제품 자체. 문구는 1줄만','컬러·소재를 누르면 3D 모델이 바로 전환','디자인을 사진이 아닌 체험으로 증명 (경쟁 4사에 없음)']],
-   ['02','우리 집에 두면 (공간)',['구매 고려 요소: 좁은 주방에 들어가는가','폭·높이·깊이 + 뚜껑 열었을 때 높이 표기','AR로 싱크대 위에 실제 크기 배치']],
-   ['03','냄새 걱정 없는 이유',['구매 고려 1순위: 여름철 냄새','필터·밀폐 구조를 3D 분해 뷰로','탈취율은 시험 기관·조건과 함께 한 줄']],
-   ['04','조용하고 강하게',['소음: 측정 조건과 함께 dB 1개','처리력: 뼈·국물 처리 결과 컷 3장','블레이드 회전 단면 애니메이션']],
-   ['05','관리는 한 번에',['필터 교체 주기 + 연간 유지비 한 줄','건조통·필터 원터치 분리 모션','세척 방법 3단계']],
-   ['06~07','구매 확신 + 접힘 정보',['보증 기간·A/S망·보조금(지자체별 상이)·가격을 한 블록에','스펙·처리 불가 품목·FAQ는 접힘형으로 길이 축소','실적이 쌓이면 리뷰 블록을 06 앞에 추가']]],
-  head:['콘텐츠','형식','블록','구매 고려 요소','3D 활용'],
-  content:[['360° 회전 뷰어 + 컬러·소재 전환','3D 실시간 렌더','01','외관·주방 조화','<span class="tag3d">3D</span> 드래그 회전, 소재 클로즈업'],['AR 우리 집 배치','AR (모바일)','02','크기·설치 공간','<span class="tag3d">3D</span> 실측 스케일 배치, 뚜껑 열림 높이'],['필터·밀폐 분해 뷰','3D 분해 애니메이션','03','냄새','<span class="tag3d">3D</span> 레이어 분리, 공기 흐름 표시'],['블레이드·열풍 단면','3D 단면 애니메이션','04','처리력·소음','<span class="tag3d">3D</span> 회전·열 분포 시각화'],['뼈·국물 처리 결과','사진 3컷 + 수치','04','처리 가능 품목','–'],['원터치 분리 모션','3D 짧은 루프','05','관리 편의','<span class="tag3d">3D</span> 건조통·필터 분리 과정'],['연간 유지비 카드','숫자 1줄 + 조건','05','유지비','–'],['보증·A/S·보조금','아이콘 3개 + 링크','06','구매 비용·사후 관리','–']]}
+const PLANS={
+ '2':{top:[['USP 우선순위',`<div class="pyr"><div class="p1"><b>1순위 · 디자인 (체험으로 증명)</b>360° 뷰어·AR 배치</div><div class="p2"><b>2순위 · 구매 불안 3가지</b>냄새 · 소음 · 공간</div><div class="p2"><b>3순위 · 관리·유지비 한 줄</b>필터 주기·연간 비용·세척</div><div class="p3"><b>기본 충족 (1블록)</b>용량 · 고온 · 자동 · 중간 투입 · 보관</div></div>`],
+  ['핵심 메시지',`<div class="callout"><b>"주방에 꺼내 두고 싶은 음식물처리기"</b><span>보여주는 디자인, 증명하는 성능</span></div><ul class="dots" style="margin-top:10px"><li>적합: 디자인·소재가 차별점인 프리미엄 제품</li><li>길이: 7블록 (1안 대비 5블록 축소)</li><li>정보 보존: 스펙·FAQ는 접힘형</li></ul>`]],
+  rows:[['hero','디자인 히어로','오브제 컷 + 컬러·소재 전환','must',['첫 화면은 제품만, 문구 1줄','컬러를 누르면 3D 모델이 바로 전환','8개 경쟁 상세페이지 모두 정적 이미지뿐']],
+   ['life','우리 집에 두면','실측 치수·뚜껑 열림 높이','must',['구매 고려 요소: 좁은 주방','폭·높이·깊이 + 열림 높이 표기','AR로 싱크대 위 실제 크기 배치']],
+   ['feat','냄새 걱정 없는 이유','필터·밀폐 구조','opt',['구매 고려 1순위: 냄새','필터·밀폐 분해 뷰 1컷','탈취율은 시험 기관·조건과 한 줄']],
+   ['feat','조용하고 강하게','소음 dB + 처리 결과','2d',['측정 조건과 함께 dB 1개','뼈·국물 처리 결과 사진 3컷','블레이드는 짧은 영상으로 충분']],
+   ['feat','관리는 한 번에','필터 주기·연간 비용·세척','2d',['필터 주기 + 연간 유지비 한 줄','세척 3단계','분리 과정은 짧은 영상']],
+   ['trust','구매 확신','보증·A/S·보조금·가격','2d',['보증 기간·A/S망',"보조금은 '지자체별 상이' 명시",'실적이 쌓이면 리뷰 블록 추가']],
+   ['info','더 알아보기 (접힘)','스펙·처리 불가 품목·FAQ','2d',['기본은 접힌 상태','눌러야 보이는 정보로 길이 축소']]],
+  d3:'<b>3D는 2개만 필수입니다.</b><span>사진으로 판단이 어려운 <b>외관(360° 뷰어)</b>과 <b>크기(AR 배치)</b>에만 씁니다. 필터 분해 뷰는 선택이고, 나머지는 영상·사진이 더 빠르고 저렴합니다.</span>',
+  head:['콘텐츠','블록','형식','3D 필요도','이유'],
+  content:[['360° 디자인 뷰어','01','3D 실시간 렌더','must','소재·마감은 사진으로 전달이 어려움'],['AR 우리 집 배치','02','모바일 AR','must','실제 크기·열림 높이 확인'],['필터·밀폐 분해 뷰','03','3D 분해 1컷','opt','냄새 차단 구조를 한눈에'],['처리 결과 사진','04','사진 3컷 + 수치','2d','뼈·국물 처리력 증명'],['소음 측정 카드','04','수치 1줄 + 조건','2d','소음 불안 해소'],['연간 유지비 카드','05','숫자 1줄 + 조건','2d','유지비 불안 해소'],['세척 3단계','05','짧은 영상','2d','관리 편의'],['보증·A/S·보조금','06','아이콘 3개 + 링크','2d','구매 확신']]},
+ '1':{top:[['USP 우선순위',`<div class="pyr"><div class="p1"><b>1순위 · 연간 유지비 공개</b>장수명 필터 + 동일 조건 전기료</div><div class="p2"><b>2순위 · 한식 실측 처리</b>국물·뼈·껍질 처리 시간 공개</div><div class="p2"><b>3순위 · 조건을 밝힌 냄새·소음</b>공인 시험, 측정 조건 표기</div><div class="p3"><b>기본 충족 (표 1장)</b>3L · 한 뼘 · 고온 · 자동 · 중간 투입 · 보관</div></div>`],
+  ['핵심 메시지',`<div class="callout"><b>"사는 날보다 쓰는 3년이 더 편한 음식물처리기"</b><span>비교 가능한 숫자 하나로 신뢰를 만드는 정보형</span></div><ul class="dots" style="margin-top:10px"><li>적합: 기능·가성비 중심 제품</li><li>길이: 12블록</li><li>위험: 정보량이 많아 모바일 이탈 가능</li></ul>`]],
+  rows:[['hero','히어로','약속 1줄 + 증거 칩 3개','2d',['비교 가능한 숫자 1개 (예: 1년 유지비)','아래에 용량·폭·온도 칩',"보조금은 '지자체별 상이'와 함께 하단"]],
+   ['pain','구매 전 고민 5가지','누르면 답변으로 이동','2d',['냄새·전기료·국물·필터값·소음','쿠첸 상세페이지 방식 차용','긴 페이지 탐색 부담 감소']],
+   ['sum','USP 3 요약','숫자 + 조건 각주','2d',['유지비·한식 실측·냄새/소음','수치마다 측정 조건','채널 간 수치 통일']],
+   ['feat','유지비 계산기','사용 빈도 → 연간 비용','2d',['주 사용 횟수 선택','필터+전기료 연간 합계','경쟁 8개 상세페이지에 계산기 없음']],
+   ['feat','한식 실측 테스트','메뉴별 전후·시간','2d',['국물·생선·수박 껍질 등 5종','투입·처리 시간·결과 무게',"코웨이는 '처리 가능'만 명시"]],
+   ['feat','냄새·소음 증명','측정 조건 공개','2d',['dB: 거리·모드와 함께','탈취율: 기관·가스 종류와 함께','미닉스 18/22.2dB 불일치 사례 방지']],
+   ['cmp','기본 스펙 체크표','용량·자동·중간 투입','2d',['표 한 장으로 압축','공통 기능은 짧게']],
+   ['life','설치 시뮬레이션','실측 도면·열림 높이','opt',['폭·높이·깊이 + 열림 높이','스마트카라는 도어 12.5cm 소구','AR은 선택']],
+   ['info','넣어도 되는 것 / 안 되는 것','아이콘 그리드','2d',['뼈 처리는 브랜드마다 다름','코웨이 불가, 쿠첸·스마트카라 가능','오사용 불만 예방']],
+   ['trust','보증·A/S·생산지','보증 기간·서비스망','2d',['보증 기간·A/S망','코웨이 1,450명·쿠쿠 120여 곳이 비교 기준']],
+   ['auth','리뷰·전문가 평가','출시 초기엔 체험단','2d',['바이툴즈 방식(사전 체험단) 참고','실적이 쌓이면 상단으로 이동']],
+   ['info','FAQ·스펙·보조금','접힘형','2d',['보조금 신청 방법','스펙 표·주의 사항']]],
+  d3:'<b>1안은 3D 없이도 충분합니다.</b><span>설치 시뮬레이션만 선택적으로 AR을 쓰고, 나머지는 영상·표·인터랙티브 계산기로 구성합니다.</span>',
+  head:['콘텐츠','블록','형식','3D 필요도','이유'],
+  content:[['15초 히어로 숏폼','01','세로 영상','2d','투입→완료→결과물을 한 번에'],['고민 5가지 앵커','02','버튼 목록','2d','원하는 정보로 바로 이동'],['유지비 계산기','04','인터랙티브','2d','구매 후 비용 불안 해소'],['한식 5종 타임랩스','05','영상 + 표','2d','국물·뼈 처리 실증'],['측정 조건 카드','06','표','2d','소음·탈취 수치 신뢰'],['설치 시뮬레이터','08','AR 또는 도면','opt','우리 집 크기 확인'],['처리 가능/불가 아이콘','09','아이콘 그리드','2d','오사용 예방'],['보조금 안내','12','체크리스트 + 링크','2d','실구매가 인하']]}
 };
-function renderPlan(n){
-  const p=P[n];
-  document.getElementById('phone'+n).innerHTML=p.blocks.map((b,i)=>`<div class="blk k-${b[0]}"><span class="n">${String(i+1).padStart(2,'0')}</span><div><b>${b[1]}</b>${b[2]}${b[3]?`<br><span class="d3">${b[3]}</span>`:''}</div></div>`).join('');
-  document.getElementById('notes'+n).innerHTML=p.notes.map(x=>`<div class="item"><span class="n">${x[0]}</span><div><h4>${x[1]}</h4><ul class="dots">${x[2].map(t=>`<li>${t}</li>`).join('')}</ul></div></div>`).join('');
-}
-renderPlan(1);renderPlan(2);
-function renderContent(n){
-  const p=P[n];document.getElementById('contentLabel').textContent=(n===1?'1안 · 전체안':'2안 · 심플안')+' 기준';
-  document.getElementById('contentHead').innerHTML='<tr>'+p.head.map((h,i)=>`<th style="${i===2?'text-align:center;width:60px':''}">${h}</th>`).join('')+'</tr>';
-  document.getElementById('contentTbl').innerHTML=p.content.map(r=>'<tr>'+r.map((c,i)=>`<td style="${i===2?'text-align:center':''}">${i===0?'<b>'+c+'</b>':c}</td>`).join('')+'</tr>').join('');
-}
-const tabs=[document.getElementById('tab1'),document.getElementById('tab2')];
-function selectTab(n){tabs.forEach((t,i)=>{const on=i===n-1;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;document.getElementById('pan'+(i+1)).hidden=!on;});renderContent(n);}
-tabs.forEach((t,i)=>{t.addEventListener('click',()=>selectTab(i+1));t.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const n=i===0?2:1;selectTab(n);tabs[n-1].focus();}});});
-selectTab(2);
+const D3={must:['3D 필수','t-must'],opt:['3D 선택','t-opt'],'2d':['2D로 충분','t-2d']};
 
-/* price brand filter */
-let PB='all';
-const NODATA={minix:'미닉스는 하반기 3L 신제품 없음 (MAX는 위 차트)',cuckoo:'',cuchen:'쿠첸은 위 차트 기간(1~11월 전체) 데이터 없음 · 아래 하반기 차트 참고',bitools:'바이툴즈는 다나와 가격 추이 데이터 없음'};
-const pbEl=document.getElementById('priceBrand');
-pbEl.insertAdjacentHTML('beforeend',`<button data-v="all" aria-pressed="true">전체</button>`+BR.map(([k,v])=>`<button data-v="${k}" aria-pressed="false" class="b-${k}"><span class="sw"></span>${v}</button>`).join(''));
-function setPB(v){PB=v;pbEl.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===PB));
-  document.querySelectorAll('#statGrid .stat').forEach(c=>{c.setAttribute('aria-pressed',PB!=='all'&&c.dataset.b===PB);c.classList.toggle('dimc',PB!=='all'&&c.dataset.b!==PB);});draw();}
-pbEl.addEventListener('click',e=>{const b=e.target.closest('button');if(b)setPB(b.dataset.v);});
-document.querySelectorAll('#statGrid .stat').forEach(c=>c.addEventListener('click',()=>setPB(PB===c.dataset.b?'all':c.dataset.b)));
+let TAB='3l', GB=null, ROLE='all', PLAN='2';
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fmt=n=>n==null?'–':n.toLocaleString('ko-KR')+'원';
+const ids=()=>TABS[TAB].ids;
+const dimCls=b=>GB&&b!==GB?'dimc':'';
+const onCls=b=>GB&&b===GB?'onc':'';
+const bchip=(b,t)=>`<span class="bchip b-${b}">${t||BRAND[b]}</span>`;
+const colHead=id=>{const p=P[id];return `<th class="${dimCls(p.b)}"><button class="colh ${GB===p.b?'sel':''}" data-gb="${p.b}">${bchip(p.b,p.short)}</button></th>`;};
+function grouped(rows,cell){let h='',prev='';const cnt={};rows.forEach(r=>cnt[r[0]]=(cnt[r[0]]||0)+1);
+ rows.forEach((r,ri)=>{h+='<tr>';if(r[0]!==prev){h+=`<td class="cat" rowspan="${cnt[r[0]]}">${r[0]}</td>`;prev=r[0];}
+  h+=`<th class="row">${r[1]}</th>`+ids().map(id=>{const b=P[id].b;return `<td class="${dimCls(b)} ${onCls(b)}">${cell(r,id,ri)}</td>`}).join('')+(r.extra||'')+'</tr>';});return h;}
 
-/* column focus for tables */
-document.querySelectorAll('#logicT tbody tr').forEach(tr=>[...tr.children].forEach((c,i)=>{if(i>0)c.dataset.c=i+1;}));
-const COL={};
-function colFocus(id){const t=document.getElementById(id);let cur=null;
-  const apply=c=>{cur=c;t.querySelectorAll('thead .colbtn').forEach(b=>b.setAttribute('aria-pressed',b.dataset.c===cur));
-    t.querySelectorAll('[data-c]').forEach(el=>{if(el.tagName==='BUTTON')return;const on=cur&&el.dataset.c===cur;el.classList.toggle('dimc',!!cur&&!on);el.classList.toggle('onc',!!on&&el.tagName==='TD');});};
-  t.querySelectorAll('thead .colbtn').forEach(btn=>btn.addEventListener('click',()=>apply(cur===btn.dataset.c?null:btn.dataset.c)));
-  COL[id]=apply;}
-['specT','featT','heatT','logicT'].forEach(colFocus);
-
-/* price notes A~D */
-document.querySelectorAll('.notes .item.pickn').forEach(it=>{const go=()=>{setPB(it.dataset.b);document.querySelectorAll('.notes .item.pickn').forEach(x=>x.setAttribute('aria-pressed',x===it));
-  document.getElementById(it.dataset.l==='D'?'cardC':'statGrid').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});};
-  it.addEventListener('click',go);it.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});
-
-/* global brand focus from product cards */
-const CIDX={minix:'2',cuckoo:'3',cuchen:'4',bitools:'5'};
-let GB=null;
-function setGlobal(b){GB=b;const c=b?CIDX[b]:null;
-  document.querySelectorAll('.prod.pick').forEach(p=>{p.setAttribute('aria-pressed',p.dataset.b===b);p.classList.toggle('dimc',!!b&&p.dataset.b!==b);});
-  document.querySelectorAll('.sb-row').forEach(r=>r.classList.toggle('dimc',!!b&&!r.classList.contains('b-'+b)));
-  Object.values(COL).forEach(f=>f(c));
-  setPB(b||'all');
-  fBrand=b||'all';renderFlow();
-  fFact=b||'minix';renderFact();
-  document.getElementById('gbar').classList.toggle('on',!!b);
-  document.getElementById('gbarTxt').innerHTML=b?`<span class="bchip b-${b}">${BN[b]}</span> 기준으로 모든 표·차트를 강조 중`:'';}
-document.querySelectorAll('.prod.pick').forEach(p=>{const go=()=>setGlobal(GB===p.dataset.b?null:p.dataset.b);p.addEventListener('click',go);p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});
-document.getElementById('gbarReset').addEventListener('click',()=>setGlobal(null));
-
-/* charts */
-function lineChart(el,legEl,tblEl,cfg){
-  const W=cfg.w||760,H=cfg.h||320,m={l:56,r:cfg.w?104:120,t:12,b:30};
-  const iw=W-m.l-m.r, ih=H-m.t-m.b;
-  const xs=i=>m.l+i*iw/(cfg.x.length-1);
-  const ys=v=>m.t+ih-(v-cfg.min)/(cfg.max-cfg.min)*ih;
-  let g='';
-  for(let v=cfg.min;v<=cfg.max;v+=cfg.step){g+=`<g class="grid"><line x1="${m.l}" x2="${m.l+iw}" y1="${ys(v)}" y2="${ys(v)}"/></g><g class="axis"><text x="${m.l-8}" y="${ys(v)+4}" text-anchor="end">${v/10000}만</text></g>`}
-  cfg.x.forEach((x,i)=>{g+=`<g class="axis"><text x="${xs(i)}" y="${H-8}" text-anchor="middle">${x}</text></g>`});
-  const labels=[];
-  cfg.series.forEach(s=>{
-    const pts=s.v.map((v,i)=>v==null?null:[xs(i),ys(v),v,i]).filter(Boolean);const col=css(s.c);const op=(PB==='all'||s.b===PB)?1:.1;g+=`<g opacity="${op}">`;
-    g+=`<path d="M${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join('L')}" fill="none" stroke="${col}" stroke-width="2" ${s.dash?'stroke-dasharray="6 4"':''} stroke-linejoin="round" stroke-linecap="round"/>`;
-    pts.forEach(p=>{g+=`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${col}" stroke="${css('--surface')}" stroke-width="1.5"/>`});
-    if(s.markMin){const mn=pts.reduce((a,b)=>b[2]<a[2]?b:a);g+=`<circle cx="${mn[0]}" cy="${mn[1]}" r="5" fill="none" stroke="${col}" stroke-width="2"/><text class="lbl2" x="${mn[0]}" y="${mn[1]+18}" text-anchor="middle">${(mn[2]/10000).toFixed(1)}만</text>`}
-    g+='</g>';const last=pts[pts.length-1];labels.push({y:last[1],x:last[0],t:s.n,v:last[2],op});
-  });
-  labels.sort((a,b)=>a.y-b.y);for(let i=1;i<labels.length;i++){if(labels[i].y-labels[i-1].y<26)labels[i].y=labels[i-1].y+26}
-  labels.forEach(l=>{g+=`<g opacity="${l.op}"><text class="lbl" x="${l.x+10}" y="${l.y-1}">${l.t}</text><text class="lbl2" x="${l.x+10}" y="${l.y+12}">${(l.v/10000).toFixed(1)}만원</text></g>`});
-  g+=`<line class="xh" x1="0" x2="0" y1="${m.t}" y2="${m.t+ih}" stroke="${css('--ink-3')}" stroke-dasharray="3 3" opacity="0"/><rect x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" fill="transparent" class="hit"/>`;
-  el.insertAdjacentHTML('afterbegin',`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${cfg.aria}">${g}</svg>`);
-  if(PB!=='all'&&!cfg.series.some(s=>s.b===PB))el.insertAdjacentHTML('beforeend',`<div class="nodata">${NODATA[PB]}</div>`);
-  const svg=el.querySelector('svg'),tip=el.querySelector('.tip'),xh=svg.querySelector('.xh'),hit=svg.querySelector('.hit');
-  hit.addEventListener('mousemove',e=>{const r=svg.getBoundingClientRect();const sx=(e.clientX-r.left)*W/r.width;
-    let i=Math.round((sx-m.l)/(iw/(cfg.x.length-1)));i=Math.max(0,Math.min(cfg.x.length-1,i));
-    xh.setAttribute('x1',xs(i));xh.setAttribute('x2',xs(i));xh.setAttribute('opacity',1);
-    tip.innerHTML=`<div class="t">${cfg.x[i]}</div>`+cfg.series.filter(s=>PB==='all'||s.b===PB||!cfg.series.some(z=>z.b===PB)).map(s=>`<div class="r"><span><span class="sw" style="background:${css(s.c)}"></span>${s.n}</span><b>${fmt(s.v[i])}</b></div>`).join('');
-    tip.style.display='block';const px=xs(i)*r.width/W;tip.style.left=(px>r.width*0.6?px-tip.offsetWidth-12:px+12)+'px';tip.style.top='10px';});
-  hit.addEventListener('mouseleave',()=>{tip.style.display='none';xh.setAttribute('opacity',0)});
-  legEl.innerHTML=cfg.series.map(s=>`<span style="opacity:${(PB==='all'||s.b===PB)?1:.3}"><i class="${s.dash?'dashl':''}" style="--c:${css(s.c)}"></i>${s.n}</span>`).join('');
-  const dc=s=>(PB!=='all'&&s.b!==PB)?' style="opacity:.25"':'';tblEl.innerHTML=`<thead><tr><th>월</th>${cfg.series.map(s=>`<th${dc(s)}>${s.n}</th>`).join('')}</tr></thead><tbody>${cfg.x.map((x,i)=>`<tr><td>${x}</td>${cfg.series.map(s=>`<td${dc(s)}>${fmt(s.v[i])}</td>`).join('')}</tr>`).join('')}</tbody>`;
+function renderHeader(){
+ document.querySelectorAll('#capTabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.tab===TAB));
+ const brands=[...new Set(ids().map(id=>P[id].b))];
+ document.getElementById('brandChips').innerHTML=`<span class="lab">브랜드</span><button class="chip-b" data-gb="all" aria-pressed="${!GB}">전체</button>`+brands.map(b=>`<button class="chip-b b-${b}" data-gb="${b}" aria-pressed="${GB===b}"><span class="sw"></span>${BRAND[b]}</button>`).join('');
 }
-function dumbbell(){
-  const el=document.getElementById('chartC');const rows=[['미닉스 MAX','--minix',759000,418990,'minix'],['쿠쿠 큐브 메가','--cuckoo',769000,450000,'cuckoo'],['쿠첸 제로핏','--cuchen',749000,429000,'cuchen'],['바이툴즈','--bitools',699000,405220,'bitools']];
-  const W=520,H=rows.length*58+30,m={l:104,r:20,t:10,b:24},iw=W-m.l-m.r;const mn=300000,mx=800000;const xs=v=>m.l+(v-mn)/(mx-mn)*iw;
-  let g='';for(let v=mn;v<=mx;v+=100000){g+=`<g class="grid"><line x1="${xs(v)}" x2="${xs(v)}" y1="${m.t}" y2="${H-m.b}"/></g><g class="axis"><text x="${xs(v)}" y="${H-6}" text-anchor="middle">${v/10000}만</text></g>`}
-  rows.forEach((r,i)=>{const y=m.t+20+i*58;const c=css(r[1]);const pct=((1-r[3]/r[2])*100).toFixed(1);
-    g+=`<g opacity="${(PB==='all'||r[4]===PB)?1:.12}"><text class="lbl" x="${m.l-10}" y="${y+4}" text-anchor="end">${r[0]}</text><line x1="${xs(r[3])}" x2="${xs(r[2])}" y1="${y}" y2="${y}" stroke="${c}" stroke-width="2" opacity=".55"/><circle cx="${xs(r[2])}" cy="${y}" r="6" fill="${css('--surface')}" stroke="${c}" stroke-width="2"/><circle cx="${xs(r[3])}" cy="${y}" r="6" fill="${c}" stroke="${css('--surface')}" stroke-width="2"/><text class="lbl2" x="${xs(r[3])}" y="${y+22}" text-anchor="middle">${(r[3]/10000).toFixed(1)}만</text><text class="lbl2" x="${xs(r[2])}" y="${y+22}" text-anchor="middle">${(r[2]/10000).toFixed(1)}만</text><text class="lbl" x="${(xs(r[2])+xs(r[3]))/2}" y="${y-9}" text-anchor="middle">-${pct}%</text></g>`});
-  el.insertAdjacentHTML('afterbegin',`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="정가 대비 다나와 현재 최저가">${g}</svg>`);
+function renderSummary(){
+ const t=TABS[TAB];document.getElementById('sumTitle').textContent=t.label+' 한눈에 보기';
+ document.getElementById('sumCards').innerHTML=t.sum.map(s=>`<div class="card take"><span class="k">${s[0]}</span><h3>${s[1]}</h3><ul class="dots">${s[2].map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('');
 }
-function draw(){
-  document.querySelectorAll('.chart svg,.chart .nodata').forEach(s=>s.remove());
-  lineChart(document.getElementById('chartA'),document.getElementById('legA'),document.getElementById('tblA'),{
-    aria:'2026년 1~11월 베스트셀러 4종 다나와 월별 최저가 추이',x:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월'],min:200000,max:500000,step:50000,
-    series:[{n:'미닉스 MAX',b:'minix',c:'--minix',v:[409960,439960,437690,435390,407120,417100,365000,365000,413010,421520,423590]},
-      {n:'미닉스 PRO',b:'minix',c:'--minix',dash:1,markMin:1,v:[388990,373700,368880,376560,368970,379000,321160,303070,375260,375490,344650]},
-      {n:'쿠쿠 에코웨일 2L',b:'cuckoo',c:'--cuckoo',markMin:1,v:[348790,314550,299000,324950,334590,324830,339370,341950,328940,240290,353050]},
-      {n:'쿠쿠 큐브 2L',b:'cuckoo',c:'--cuckoo',dash:1,v:[null,null,null,448890,402210,390000,390000,390000,371090,269990,366970]}]});
-  lineChart(document.getElementById('chartB'),document.getElementById('legB'),document.getElementById('tblB'),{
-    aria:'2026년 하반기 3L 신제품 다나와 월별 최저가',h:340,w:500,x:['7월','8월','9월','10월','11월'],min:200000,max:500000,step:50000,
-    series:[{n:'쿠쿠 큐브 메가',b:'cuckoo',c:'--cuckoo',v:[null,null,490000,466170,450000]},
-      {n:'쿠쿠 메가',b:'cuckoo',c:'--cuckoo',dash:1,markMin:1,v:[null,469000,420070,323990,359990]},
-      {n:'쿠첸 제로핏',b:'cuchen',c:'--cuchen',v:[436060,429000,399000,399000,399000]}]});
-  dumbbell();
+function renderProducts(){
+ document.getElementById('prodCards').innerHTML=ids().map(id=>{const p=P[id];return `<article class="card prod b-${p.b} ${dimCls(p.b)} ${GB===p.b?'sel':''}" data-gb="${p.b}" tabindex="0" role="button" aria-pressed="${GB===p.b}">${bchip(p.b)}<h3>${p.name}</h3><span class="model">${p.model} · ${p.launch}</span><p class="tag">${p.tag}</p><dl><dt>용량</dt><dd>${p.spec.cap}</dd><dt>정가</dt><dd>${p.list?fmt(p.list):'공식 정가 확인 불가'}</dd><dt>다나와 현재</dt><dd>${fmt(p.cur)}${id==='bitools'?'~':''}</dd><dt>A/S</dt><dd>${p.as}</dd></dl></article>`}).join('');
+ const best=BEST[TAB];
+ document.getElementById('specT').innerHTML=`<thead><tr><th class="lh" style="width:84px">구분</th><th class="lh">항목</th>${ids().map(colHead).join('')}</tr></thead><tbody>`+grouped(SPEC_ROWS,(r,id)=>{const k=r[2];const p=P[id];const v=k==='list'?(p.list?fmt(p.list):'–'):k==='launch'?p.launch:p.spec[k];return best[k]===id?`<span class="best">${v}</span>`:v;})+'</tbody>';
+ document.getElementById('featT').innerHTML=`<thead><tr><th class="lh" style="width:84px">구분</th><th class="lh">기능</th>${ids().map(colHead).join('')}</tr></thead><tbody>`+grouped(FEAT_ROWS,(r,id,ri)=>P[id].feat[ri]?'<span class="tick" aria-label="확인">✓</span>':'<span class="dash" aria-label="미확인">–</span>')+'</tbody>';
 }
-draw();
-new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
+function renderPrice(){
+ const list=ids();
+ document.getElementById('statCards').innerHTML=list.map(id=>{const p=P[id];const v=p.m.map((x,i)=>[i,x]).filter(x=>x[1]);
+  let big='데이터 없음',sub=p.nodata||'';if(v.length){const f=v[0],l=v[v.length-1];const ch=(l[1]/f[1]-1)*100;const mn=v.reduce((a,b)=>b[1]<a[1]?b:a);big=`<span class="${ch<0?'dn':'up'}">${ch>0?'+':''}${ch.toFixed(1)}%</span>`;sub=`${M[f[0]]} ${fmt(f[1])} → ${M[l[0]]} ${fmt(l[1])}<br>최저 ${M[mn[0]]} ${fmt(mn[1])}`;}
+  return `<button class="card stat b-${p.b} ${dimCls(p.b)} ${GB===p.b?'sel':''}" data-gb="${p.b}"><span class="lab">${p.short}</span><span class="big">${big}</span><span class="sub">${sub}</span></button>`}).join('');
+ let h=`<thead><tr><th class="lh">제품</th>${M.map(m=>`<th>${m}</th>`).join('')}<th>현재</th></tr></thead><tbody>`;
+ list.forEach(id=>{const p=P[id];h+=`<tr class="${dimCls(p.b)}"><th class="row"><button class="colh ${GB===p.b?'sel':''}" data-gb="${p.b}">${bchip(p.b,p.short)}</button></th>`;
+  let prev=null;p.m.forEach(x=>{if(x==null){h+='<td class="dash">–</td>';return;}let mom='';if(prev){const c=(x/prev-1)*100;mom=Math.abs(c)<0.05?'<span class="mom dash">0%</span>':`<span class="mom ${c<0?'dn':'up'}">${c<0?'▼':'▲'}${Math.abs(c).toFixed(1)}%</span>`;}h+=`<td class="p ${onCls(p.b)}">${(x/10000).toFixed(1)}${mom}</td>`;prev=x;});
+  h+=`<td class="p ${onCls(p.b)}">${(p.cur/10000).toFixed(1)}</td></tr>`;});
+ document.getElementById('momT').innerHTML=h+'</tbody>';
+ const notes=list.map(id=>P[id]).filter(p=>p.gap||p.nodata||p.weekly).map(p=>`${p.short}: ${p.gap||p.nodata||'주간 데이터만 있어 해당 월 주간값 중 최저값 사용'}`);
+ document.getElementById('momNote').textContent=notes.join(' · ');
+ document.getElementById('weeklyCard').style.display=TAB==='3l'?'':'none';
+ const dn=list.map(id=>P[id]).filter(p=>!p.list).map(p=>`${p.short}는 공식 정가를 확인할 수 없어 제외했습니다(판매처마다 60만~97.9만원으로 표기).`);
+ if(TAB==='3l')dn.push('바이툴즈 현재가는 다나와 개별 판매처 최저가입니다.');
+ document.getElementById('dumbNote').textContent=dn.join(' ');
+ drawCharts();
+}
+function lineChart(el,legEl,cfg){
+ el.querySelectorAll('svg,.nodata').forEach(n=>n.remove());
+ const W=cfg.w||760,H=cfg.h||330,m={l:56,r:cfg.w?20:130,t:12,b:30},iw=W-m.l-m.r,ih=H-m.t-m.b;
+ const xs=i=>m.l+i*iw/(cfg.x.length-1),ys=v=>m.t+ih-(v-cfg.min)/(cfg.max-cfg.min)*ih;
+ let g='';for(let v=cfg.min;v<=cfg.max;v+=cfg.step){g+=`<g class="gridl"><line x1="${m.l}" x2="${m.l+iw}" y1="${ys(v)}" y2="${ys(v)}"/></g><g class="axis"><text x="${m.l-8}" y="${ys(v)+4}" text-anchor="end">${(v/10000).toFixed(v%10000?1:0)}만</text></g>`}
+ cfg.x.forEach((x,i)=>{g+=`<g class="axis"><text x="${xs(i)}" y="${H-8}" text-anchor="middle">${x}</text></g>`});
+ const labels=[];
+ cfg.series.forEach(s=>{const pts=s.v.map((v,i)=>v==null?null:[xs(i),ys(v),v,i]).filter(Boolean);if(!pts.length)return;const col=css(s.c);const op=(!GB||s.b===GB)?1:.1;
+  g+=`<g opacity="${op}">`;let seg=[];const flush=()=>{if(seg.length>1)g+=`<path d="M${seg.join('L')}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round"/>`;seg=[];};
+  s.v.forEach((v,i)=>{if(v==null)flush();else seg.push(xs(i).toFixed(1)+','+ys(v).toFixed(1));});flush();
+  pts.forEach(p=>{g+=`<circle cx="${p[0]}" cy="${p[1]}" r="3.2" fill="${col}" stroke="${css('--surface')}" stroke-width="1.5"/>`});
+  g+='</g>';if(!cfg.w){const last=pts[pts.length-1];labels.push({y:last[1],x:last[0],t:s.n,v:last[2],op});}});
+ labels.sort((a,b)=>a.y-b.y);for(let i=1;i<labels.length;i++){if(labels[i].y-labels[i-1].y<26)labels[i].y=labels[i-1].y+26}
+ labels.forEach(l=>{g+=`<g opacity="${l.op}"><text class="lbl" x="${l.x+10}" y="${l.y-1}">${l.t}</text><text class="lbl2" x="${l.x+10}" y="${l.y+12}">${(l.v/10000).toFixed(1)}만원</text></g>`});
+ g+=`<line class="xh" x1="0" x2="0" y1="${m.t}" y2="${m.t+ih}" stroke="${css('--ink-3')}" stroke-dasharray="3 3" opacity="0"/><rect x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" fill="transparent" class="hit"/>`;
+ el.insertAdjacentHTML('afterbegin',`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${cfg.aria}">${g}</svg>`);
+ if(GB&&!cfg.series.some(s=>s.b===GB&&s.v.some(v=>v)))el.insertAdjacentHTML('beforeend',`<div class="nodata">${BRAND[GB]}: 이 차트에 표시할 가격 추이 데이터가 없습니다</div>`);
+ const svg=el.querySelector('svg'),tip=el.querySelector('.tip'),xh=svg.querySelector('.xh'),hit=svg.querySelector('.hit');
+ if(tip){hit.addEventListener('mousemove',e=>{const r=svg.getBoundingClientRect();const sx=(e.clientX-r.left)*W/r.width;let i=Math.round((sx-m.l)/(iw/(cfg.x.length-1)));i=Math.max(0,Math.min(cfg.x.length-1,i));
+  xh.setAttribute('x1',xs(i));xh.setAttribute('x2',xs(i));xh.setAttribute('opacity',1);
+  const ss=cfg.series.filter(s=>!GB||s.b===GB);tip.innerHTML=`<div class="t">${cfg.x[i]}</div>`+(ss.length?ss:cfg.series).map(s=>`<div class="r"><span><span class="sw" style="background:${css(s.c)}"></span>${s.n}</span><b>${fmt(s.v[i])}</b></div>`).join('');
+  tip.style.display='block';const px=xs(i)*r.width/W;tip.style.left=(px>r.width*0.6?px-tip.offsetWidth-12:px+12)+'px';tip.style.top='10px';});
+ hit.addEventListener('mouseleave',()=>{tip.style.display='none';xh.setAttribute('opacity',0)});}
+ if(legEl)legEl.innerHTML=cfg.series.map(s=>`<span data-gb="${s.b}" style="opacity:${(!GB||s.b===GB)?1:.3}"><i style="--c:${css(s.c)}"></i>${s.n}</span>`).join('');
+}
+function drawCharts(){
+ const t=TABS[TAB];const order=TAB==='3l'?['max','cubemega','zerofit','coway3','bitools']:['cube2','mini','coway2','stone'];
+ lineChart(document.getElementById('chartA'),document.getElementById('legA'),{aria:t.label+' 월별 다나와 최저가',x:M,min:t.ymin,max:t.ymax,step:100000,
+  series:order.map(id=>({n:P[id].short,b:P[id].b,c:'--'+P[id].b,v:P[id].m}))});
+ if(TAB==='3l')lineChart(document.getElementById('chartW'),null,{aria:'쿠첸 제로핏 주간 최저가',w:520,h:240,x:['9.1','9.8','9.15','9.22','9.29','10.6','10.13','10.20','10.27','11.3','11.10','11.17'],min:350000,max:500000,step:50000,
+  series:[{n:'제로핏 주간',b:'cuchen',c:'--cuchen',v:[429000,399000,428990,449000,449000,449000,449000,449000,399000,399000,399000,399000]}]});
+ const el=document.getElementById('chartC');el.querySelectorAll('svg').forEach(n=>n.remove());
+ const rows=ids().map(id=>P[id]).filter(p=>p.list);const W=520,H=rows.length*56+30,m={l:120,r:20,t:10,b:24},iw=W-m.l-m.r;const mn=200000,mx=800000;const xs=v=>m.l+(v-mn)/(mx-mn)*iw;
+ let g='';for(let v=mn;v<=mx;v+=100000){g+=`<g class="gridl"><line x1="${xs(v)}" x2="${xs(v)}" y1="${m.t}" y2="${H-m.b}"/></g><g class="axis"><text x="${xs(v)}" y="${H-6}" text-anchor="middle">${v/10000}만</text></g>`}
+ rows.forEach((p,i)=>{const y=m.t+20+i*56;const c=css('--'+p.b);const pct=((1-p.cur/p.list)*100).toFixed(1);
+  g+=`<g opacity="${(!GB||p.b===GB)?1:.12}"><text class="lbl" x="${m.l-10}" y="${y+4}" text-anchor="end">${p.short}</text><line x1="${xs(p.cur)}" x2="${xs(p.list)}" y1="${y}" y2="${y}" stroke="${c}" stroke-width="2" opacity=".55"/><circle cx="${xs(p.list)}" cy="${y}" r="6" fill="${css('--surface')}" stroke="${c}" stroke-width="2"/><circle cx="${xs(p.cur)}" cy="${y}" r="6" fill="${c}" stroke="${css('--surface')}" stroke-width="2"/><text class="lbl2" x="${xs(p.cur)}" y="${y+21}" text-anchor="middle">${(p.cur/10000).toFixed(1)}만</text><text class="lbl2" x="${xs(p.list)}" y="${y+21}" text-anchor="middle">${(p.list/10000).toFixed(1)}만</text><text class="lbl" x="${(xs(p.list)+xs(p.cur))/2}" y="${y-9}" text-anchor="middle">-${pct}%</text></g>`});
+ el.insertAdjacentHTML('afterbegin',`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="정가 대비 다나와 현재 최저가">${g}</svg>`);
+}
+function renderUSP(){
+ document.getElementById('uspCards').innerHTML=ids().map(id=>{const p=P[id];return `<div class="card uspc b-${p.b} ${dimCls(p.b)} ${GB===p.b?'sel':''}" tabindex="0"><button class="colh ${GB===p.b?'sel':''}" data-gb="${p.b}" style="justify-self:start">${bchip(p.b,p.short)}</button><p class="fine">${p.uspSrc}</p><ol class="rank">${p.usp.map(u=>`<li><div><b>${u[0]}</b><span>${u[1]}</span></div></li>`).join('')}</ol><div class="diff"><b>차별점</b><ul class="dots">${p.diff.map(d=>`<li>${d}</li>`).join('')}</ul></div></div>`}).join('');
+ const rate=x=>x?`<span class="rate ${x===3?'r3':''}">${[1,2,3].map(i=>`<i class="${i<=x?'on':''}"></i>`).join('')}</span>`:'<span class="dash">–</span>';
+ const rows=HEAT_ROWS.map((r,ri)=>{const v=ids().map(id=>P[id].heat[ri]);const s=v.filter(x=>x>=2).length;const vd=s>=3?'<span class="chip st-na">포화</span>':s===2?'<span class="chip st-warn">경쟁</span>':s===1?'<span class="chip st-ok">단독</span>':'<span class="dash">–</span>';const rr=[r[0],r[1]];rr.extra=`<td>${vd}</td>`;return rr;});
+ document.getElementById('heatT').innerHTML=`<thead><tr><th class="lh" style="width:96px">카테고리</th><th class="lh">소구 포인트</th>${ids().map(colHead).join('')}<th>경쟁 강도</th></tr></thead><tbody>`+grouped(rows,(r,id,ri)=>rate(P[id].heat[ri]))+'</tbody>';
+}
+function renderPDP(){
+ document.getElementById('roleSeg').innerHTML='<span class="lab">역할</span>'+[['all','전체']].concat(Object.entries(KIND)).map(([k,v])=>`<button data-role="${k}" class="${k!=='all'?'k-'+k:''}" aria-pressed="${ROLE===k}">${v}</button>`).join('');
+ document.getElementById('flow').innerHTML=ids().map(id=>{const p=P[id];const mix=Object.keys(KIND).map(k=>[k,p.flow.filter(x=>x[0]===k).length]).filter(x=>x[1]);
+  return `<div class="lane ${dimCls(p.b)}"><div class="who"><button class="colh ${GB===p.b?'sel':''}" data-gb="${p.b}">${bchip(p.b,p.short)}</button><span class="logic">${p.logic[0]}</span><span class="fine">총 ${p.flow.length}개 섹션</span><div class="mix">${mix.map(([k,n])=>`<span class="k-${k}">${KIND[k]} <b>${n}</b></span>`).join('')}</div></div><div class="steps">${p.flow.map((x,i)=>`<span class="step k-${x[0]} ${ROLE!=='all'&&x[0]!==ROLE?'dim':''}"><span class="n">${String(i+1).padStart(2,'0')} · ${KIND[x[0]]}</span>${x[1]}</span>`).join('')}</div></div>`}).join('');
+ let h=`<thead><tr><th class="lh" style="width:90px">구분</th>${ids().map(colHead).join('')}</tr></thead><tbody>`;
+ LOGIC_ROWS.forEach((r,ri)=>{h+=`<tr><th class="row">${r}</th>${ids().map(id=>{const p=P[id];return `<td class="lt ${dimCls(p.b)} ${onCls(p.b)}">${ri===0?'<b>'+p.logic[0]+'</b>':p.logic[ri]}</td>`}).join('')}</tr>`;});
+ document.getElementById('logicT').innerHTML=h+'</tbody>';
+}
+function renderFacts(){
+ const brands=new Set(ids().map(id=>P[id].b));
+ const rows=FACTS.filter(f=>(f[0]==='common'||brands.has(f[0]))&&(f[1]==='all'||f[1]===TAB));
+ document.getElementById('factT').innerHTML=`<thead><tr><th class="lh" style="width:120px">브랜드</th><th class="lh">주장 / 데이터</th><th class="lh">대조 결과</th><th style="width:90px">판정</th><th class="lh" style="width:130px">근거</th></tr></thead><tbody>`+rows.map(f=>{const d=f[0]==='common'?(GB?'dimc':''):dimCls(f[0]);return `<tr class="${d}"><td class="lt">${f[0]==='common'?'<b>공통</b>':`<button class="colh ${GB===f[0]?'sel':''}" data-gb="${f[0]}">${bchip(f[0])}</button>`}</td><td class="lt"><b>${f[2]}</b></td><td class="lt" style="color:var(--ink-2)">${f[3]}</td><td><span class="chip ${ST[f[4]][1]}">${ST[f[4]][0]}</span></td><td class="lt">${f[5].map(k=>`<a href="${L[k][1]}">${L[k][0]}</a>`).join('<br>')}</td></tr>`}).join('')+'</tbody>';
+ const vis=rows.filter(f=>!GB||f[0]===GB);const c={};vis.forEach(r=>c[r[4]]=(c[r[4]]||0)+1);
+ document.getElementById('factCount').textContent=`${GB?BRAND[GB]+' ':''}${vis.length}건 · `+Object.entries(ST).filter(([k])=>c[k]).map(([k,v])=>`${v[0]} ${c[k]}`).join(' · ');
+}
+function renderPlan(){
+ document.querySelectorAll('[data-plan]').forEach(b=>b.setAttribute('aria-selected',b.dataset.plan===PLAN));
+ const p=PLANS[PLAN];
+ document.getElementById('planTop').innerHTML=p.top.map(t=>`<div class="card"><h3 style="margin-bottom:10px">${t[0]}</h3>${t[1]}</div>`).join('');
+ document.getElementById('planRows').innerHTML=`<div class="ph"><div>모바일 PDP 블록 (${p.rows.length}개)</div><div>구성 이유와 내용</div></div>`+p.rows.map((r,i)=>`<div class="pr"><div class="blk k-${r[0]}"><span class="n">${String(i+1).padStart(2,'0')}</span><div><b>${r[1]}</b><span>${r[2]}</span></div><span class="tag3d ${D3[r[3]][1]}">${D3[r[3]][0]}</span></div><div class="exp"><ul class="dots">${r[4].map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`).join('');
+ document.getElementById('d3note').innerHTML=p.d3;
+ document.getElementById('contentLabel').textContent=PLAN==='2'?'2안 · 심플안 기준':'1안 · 전체안 기준';
+ document.getElementById('contentT').innerHTML=`<thead><tr>${p.head.map((h,i)=>`<th class="${i===0||i===4?'lh':''}">${h}</th>`).join('')}</tr></thead><tbody>`+p.content.map(r=>`<tr><th class="row">${r[0]}</th><td>${r[1]}</td><td>${r[2]}</td><td><span class="tag3d ${D3[r[3]][1]}">${D3[r[3]][0]}</span></td><td class="lt">${r[4]}</td></tr>`).join('')+'</tbody>';
+}
+function renderSources(){
+ const dn=[['미닉스 더 플렌더 Max MNFD-200G','101071457'],['미닉스 더 플렌더 mini MNFD-300G','122694803'],['쿠쿠 에코웨일 큐브 메가 CFD-FNL301DCGW','124102411'],['쿠쿠 에코웨일 큐브 CFD-FNL201DCGW','122621378'],['쿠첸 제로핏 CFP-EN301DBIW','123032088'],['코웨이 제로 WMG-3004','122684997'],['코웨이 제로 WMG-2005 (포슬린 화이트)','122684803'],['스마트카라 스톤 SC-S0201','103483682']];
+ document.getElementById('srcDanawa').innerHTML=dn.map(d=>`<li><a href="https://prod.danawa.com/info/?pcode=${d[1]}">${d[0]}</a></li>`).join('')+`<li><a href="${L.dnB[1]}">바이툴즈 음식물처리기 검색 결과</a></li><li><a href="${L.plan[1]}">다나와 기획전: 미닉스 Max vs Pro</a></li>`;
+}
+function renderAll(){renderHeader();renderSummary();renderProducts();renderPrice();renderUSP();renderPDP();renderFacts();renderPlan();}
+function setGB(b){GB=(b==='all'||GB===b)?null:b;renderAll();}
+document.addEventListener('click',e=>{
+ const g=e.target.closest('[data-gb]');if(g){setGB(g.dataset.gb);return;}
+ const t=e.target.closest('[data-tab]');if(t){TAB=t.dataset.tab;if(GB&&!ids().some(id=>P[id].b===GB))GB=null;renderAll();return;}
+ const r=e.target.closest('[data-role]');if(r){ROLE=r.dataset.role;renderPDP();return;}
+ const pl=e.target.closest('[data-plan]');if(pl){PLAN=pl.dataset.plan;renderPlan();return;}
+});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('article[data-gb]')){e.preventDefault();setGB(e.target.dataset.gb);}});
+renderSources();renderAll();
+new MutationObserver(drawCharts).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',drawCharts);
 </script>
 </body>
 </html>
